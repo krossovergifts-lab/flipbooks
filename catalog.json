@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "title": "Krossover Catalogues",
+  "books": [
+    {
+      "slug": "test",
+      "title": "TEST",
+      "description": "",
+      "category": "Catalogue",
+      "keywords": "",
+      "pageCount": 9,
+      "updatedAt": "2026-10-13T13:51:11.043Z"
+    }
+  ]
+}

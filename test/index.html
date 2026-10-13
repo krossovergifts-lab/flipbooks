@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="FlipStudio Pro" />
+    <title>TEST</title>
+    <meta name="description" content="TEST — interactive flipbook" />
+    <meta property="og:type" content="book" />
+    <meta property="og:title" content="TEST" />
+    <meta property="og:description" content="TEST — interactive flipbook" />
+    <meta property="og:url" content="https://krossovergifts-lab.github.io/flipbooks/test/" />
+    <meta property="og:site_name" content="Krossover Catalogues" />
+    <meta property="og:image" content="https://krossovergifts-lab.github.io/flipbooks/test/cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="TEST" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TEST" />
+    <meta name="twitter:description" content="TEST — interactive flipbook" />
+    <meta name="twitter:image" content="https://krossovergifts-lab.github.io/flipbooks/test/cover.jpg" />
+    <link rel="canonical" href="https://krossovergifts-lab.github.io/flipbooks/test/" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #0b1220; }
+      #publication { height: 100vh; height: 100dvh; }
+/* FlipStudio Pro shared object styles.
+   Used by the editor canvas, Preview mode and exported publications.
+   Geometry is percentage-based (see engine.js overlayStyle) and text sizes use
+   container-query units of the page, so every surface renders the same layout. */
+
+.fs-page {
+  position: relative;
+  container-type: size;
+  overflow: hidden;
+  background: #ffffff;
+  color: #111827;
+}
+
+.fs-page-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fs-page-blank {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+}
+
+.fs-overlay {
+  position: absolute;
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.fs-overlay[data-type='text'],
+.fs-overlay[data-type='button'],
+.fs-overlay[data-type='hotspot'] {
+  overflow: visible;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.fs-overlay[data-action] {
+  cursor: pointer;
+}
+
+.fs-overlay[data-type='video'],
+.fs-overlay[data-type='audio'] {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.fs-overlay img.fs-image {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.fs-fit-cover { object-fit: cover; }
+.fs-fit-contain { object-fit: contain; }
+.fs-fit-fill { object-fit: fill; }
+
+.fs-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  box-sizing: border-box;
+  color: #475569;
+  background: repeating-linear-gradient(45deg, #f1f5f9 0 10px, #e2e8f0 10px 20px);
+  font: 600 12px/1.3 'Segoe UI', system-ui, sans-serif;
+  text-align: center;
+}
+
+/* Slideshow */
+.fs-overlay[data-type='slideshow'] {
+  background: #0f172a;
+}
+
+.fs-slides,
+.fs-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.fs-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  display: block;
+  visibility: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  animation-duration: var(--fs-transition, 600ms);
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
+.fs-slide.is-active,
+.fs-slide.is-leaving {
+  visibility: visible;
+}
+
+.fs-slide.is-active { z-index: 2; }
+.fs-slide.is-leaving { z-index: 1; }
+
+.fs-slides[data-transition='fade'] .fs-slide.is-active.dir-forward,
+.fs-slides[data-transition='fade'] .fs-slide.is-active.dir-back { animation-name: fs-fade-in; }
+.fs-slides[data-transition='fade'] .fs-slide.is-leaving { animation-name: fs-fade-out; }
+
+.fs-slides[data-transition='slide'] .fs-slide.is-active.dir-forward { animation-name: fs-in-from-right; }
+.fs-slides[data-transition='slide'] .fs-slide.is-active.dir-back { animation-name: fs-in-from-left; }
+.fs-slides[data-transition='slide'] .fs-slide.is-leaving.dir-forward { animation-name: fs-out-to-left; }
+.fs-slides[data-transition='slide'] .fs-slide.is-leaving.dir-back { animation-name: fs-out-to-right; }
+
+.fs-slides[data-transition='instant'] .fs-slide.is-leaving { visibility: hidden; }
+
+@keyframes fs-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fs-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fs-in-from-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes fs-in-from-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes fs-out-to-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes fs-out-to-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
+
+.fs-ss-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  min-height: 0;
+  margin-top: -15px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.55);
+  font: 700 16px/30px system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.fs-ss-nav:hover { background: rgba(15, 23, 42, 0.8); }
+.fs-ss-prev { left: 6px; }
+.fs-ss-next { right: 6px; }
+
+.fs-ss-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.fs-ss-dot {
+  width: 9px;
+  height: 9px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+}
+
+.fs-ss-dot.is-active { background: #ffffff; }
+
+.fs-ss-thumbs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.fs-ss-thumb {
+  width: 36px;
+  height: 24px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #0f172a;
+  opacity: 0.65;
+  cursor: pointer;
+}
+
+.fs-ss-thumb img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  display: block;
+}
+
+.fs-ss-thumb.is-active {
+  border-color: #ffffff;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-slide { animation-duration: 1ms !important; }
+}
+
+/* ---------- Styled skins (text, button, hotspot) ---------- */
+
+.fs-skin {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: visible;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease, opacity 0.22s ease;
+}
+
+.fs-text {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.fs-text-gradient .fs-text {
+  background: var(--fs-text-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.fs-marker {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 4.4cqw;
+  height: 4.4cqw;
+  min-width: 16px;
+  min-height: 16px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--fs-marker-bg);
+  color: var(--fs-marker-color);
+  box-shadow: 0 0.4cqw 1.2cqw rgba(15, 23, 42, 0.35);
+  font: 700 2.6cqw/1 'Segoe UI', system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.fs-marker[data-marker='dot'] {
+  width: 2.4cqw;
+  height: 2.4cqw;
+  min-width: 10px;
+  min-height: 10px;
+}
+
+.fs-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 30;
+  width: max-content;
+  max-width: 260px;
+  padding: 6px 10px;
+  transform: translate(-50%, 4px);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #ffffff;
+  font: 500 clamp(11px, 1.6cqw, 15px)/1.35 'Segoe UI', system-ui, sans-serif;
+  text-align: center;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.fs-overlay:hover > .fs-tooltip,
+.fs-overlay:focus-visible > .fs-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Hotspot visibility */
+.fs-reveal-hover { opacity: 0; }
+.fs-overlay:hover > .fs-reveal-hover,
+.fs-overlay:focus-visible > .fs-reveal-hover { opacity: 1; }
+.fs-reveal-never { opacity: 0; }
+
+/* Hover effects */
+.fs-overlay:hover > .fs-hover-lift { transform: translateY(-6%); box-shadow: 0 1.4cqw 3cqw rgba(15, 23, 42, 0.35); }
+.fs-overlay:hover > .fs-hover-grow { transform: scale(1.06); }
+.fs-overlay:hover > .fs-hover-glow { box-shadow: 0 0 2.4cqw var(--fs-effect-color), 0 0 0.6cqw var(--fs-effect-color); }
+.fs-overlay:hover > .fs-hover-darken { filter: brightness(0.86); }
+.fs-overlay:hover > .fs-hover-highlight { filter: brightness(1.12) saturate(1.15); box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.14); }
+.fs-overlay:hover > .fs-hover-underline .fs-text { text-decoration: underline; text-underline-offset: 0.15em; }
+.fs-hover-shine,
+.fs-fx-shine { overflow: hidden; }
+.fs-hover-shine::after,
+.fs-fx-shine::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -60%;
+  width: 40%;
+  transform: skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  pointer-events: none;
+  opacity: 0;
+}
+.fs-overlay:hover > .fs-hover-shine::after { animation: fs-shine-sweep 0.8s ease; }
+.fs-fx-shine::after { animation: fs-shine-sweep 2.6s ease-in-out infinite; }
+
+/* Idle (attention) effects */
+.fs-fx-pulse { animation: fs-pulse 1.8s ease-in-out infinite; }
+.fs-fx-glow { animation: fs-glow 2s ease-in-out infinite; }
+.fs-fx-bounce { animation: fs-bounce 1.6s ease infinite; }
+.fs-fx-float { animation: fs-float 3.2s ease-in-out infinite; }
+.fs-fx-wiggle { animation: fs-wiggle 2.8s ease-in-out infinite; }
+.fs-fx-blink { animation: fs-blink 1.4s ease-in-out infinite; }
+.fs-fx-heartbeat { animation: fs-heartbeat 1.6s ease-in-out infinite; }
+.fs-fx-ripple::before,
+.fs-fx-beacon .fs-marker::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 0.35cqw solid var(--fs-effect-color);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: fs-ripple 1.8s ease-out infinite;
+}
+.fs-fx-beacon .fs-marker::before { border-color: var(--fs-marker-bg); }
+
+@keyframes fs-shine-sweep { 0% { left: -60%; opacity: 0; } 15% { opacity: 1; } 60%, 100% { left: 130%; opacity: 0; } }
+@keyframes fs-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes fs-glow { 0%, 100% { box-shadow: 0 0 0 transparent; } 50% { box-shadow: 0 0 2.6cqw var(--fs-effect-color); } }
+@keyframes fs-bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-12%); } 60% { transform: translateY(-6%); } }
+@keyframes fs-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6%); } }
+@keyframes fs-wiggle { 0%, 70%, 100% { transform: rotate(0); } 75% { transform: rotate(-4deg); } 85% { transform: rotate(4deg); } 95% { transform: rotate(-2deg); } }
+@keyframes fs-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes fs-heartbeat { 0%, 40%, 100% { transform: scale(1); } 10%, 30% { transform: scale(1.1); } 20% { transform: scale(0.98); } }
+@keyframes fs-ripple { 0% { transform: scale(1); opacity: 0.85; } 100% { transform: scale(1.45); opacity: 0; } }
+
+/* Product pop-up (reader only) */
+.fs-popup-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(2, 6, 23, 0.62);
+  animation: fs-fade-in 0.18s ease both;
+}
+
+.fs-popup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.fs-popup img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  max-height: 260px;
+  object-fit: cover;
+}
+
+.fs-popup-body { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px 20px; }
+.fs-popup-title { margin: 0; font-size: 20px; font-weight: 700; }
+.fs-popup-price { font-size: 18px; font-weight: 700; color: #b45309; }
+.fs-popup-text { margin: 0; color: #334155; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+.fs-popup-cta {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}
+.fs-popup-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.7);
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*='fs-fx-'],
+  [class*='fs-fx-']::before,
+  [class*='fs-fx-']::after { animation: none !important; }
+}
+
+/* PDF text layer: invisible text positioned over the page image, so text can be
+   selected, copied and searched. Hidden from the pointer unless "Select text" is on. */
+.fs-textlayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fs-textlayer > span {
+  position: absolute;
+  white-space: pre;
+  color: transparent;
+  font-family: sans-serif;
+  transform-origin: 0 0;
+  transform: rotate(var(--fs-angle, 0deg)) scaleX(var(--fs-scale-x, 1));
+  cursor: text;
+}
+.fs-textlayer > br { display: none; }
+.fs-textlayer > span.fs-hit {
+  background: rgba(250, 204, 21, 0.45);
+  box-shadow: 0 0 0 0.15em rgba(250, 204, 21, 0.45);
+  border-radius: 0.1em;
+}
+.fs-selecting .fs-textlayer {
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.fs-selecting .fs-textlayer > span::selection { color: transparent; background: rgba(37, 99, 235, 0.35); }
+
+/* FlipStudio Pro reader chrome. Shared by Preview mode and exported publications. */
+
+.fs-reader {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  color: #e2e8f0;
+  background: var(--fs-reader-bg, #0b1220);
+  font: 14px/1.4 'Segoe UI', system-ui, sans-serif;
+}
+
+.fs-reader-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  min-width: 0;
+  background: var(--fs-reader-bar, transparent);
+}
+
+.fs-reader-bar[hidden] {
+  display: none;
+}
+
+.fs-reader-btn {
+  min-height: 32px;
+  padding: 4px 12px;
+  color: #e2e8f0;
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.fs-reader-btn:hover:not(:disabled) {
+  background: #273449;
+}
+
+.fs-reader-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.fs-reader-btn:focus-visible,
+.fs-reader-scrub:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.fs-reader-count,
+.fs-reader-time {
+  min-width: 72px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.fs-reader-fullscreen {
+  margin-left: auto;
+}
+
+.fs-reader-scrub {
+  flex: 1 1 200px;
+  max-width: 520px;
+  min-width: 80px;
+}
+
+.fs-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.fs-book-host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.fs-book {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.fs-book > .fs-book-page {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+.fs-book .stf__item.fs-page {
+  box-shadow: none;
+}
+
+/* Search panel */
+.fs-search {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: min(340px, calc(100% - 16px));
+  max-height: calc(100% - 16px);
+  color: #0f172a;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+.fs-search-head { display: flex; gap: 6px; padding: 10px; border-bottom: 1px solid #e2e8f0; }
+.fs-search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  font: inherit;
+  color: inherit;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+.fs-search-close { width: 32px; font-size: 20px; line-height: 1; color: #475569; background: none; border: 0; cursor: pointer; }
+.fs-search-status { padding: 6px 12px; font-size: 12px; color: #64748b; }
+.fs-search-status:empty { display: none; }
+.fs-search-results { margin: 0; padding: 0 6px 8px; list-style: none; overflow: auto; }
+.fs-search-hit {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 7px 8px;
+  text-align: left;
+  font: inherit;
+  font-size: 13px;
+  color: #334155;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.fs-search-hit:hover, .fs-search-hit:focus-visible { background: #eff6ff; outline: none; }
+.fs-search-hit strong { font-size: 11px; color: #2563eb; text-transform: uppercase; letter-spacing: 0.04em; }
+.fs-search-hit mark { background: #fde68a; color: inherit; border-radius: 2px; }
+.fs-reader-select[aria-pressed='true'] { background: #2563eb; border-color: #2563eb; color: #fff; }
+
+@media (max-width: 600px) {
+  .fs-reader-bar { gap: 6px; padding: 6px; }
+  .fs-reader-fullscreen { margin-left: 0; }
+}
+
+    </style>
+    <style id="fs-fonts">
+
+    </style>
+  </head>
+  <body>
+    <div id="publication" role="main" aria-label="TEST"></div>
+    <noscript><p style="color:#fff;padding:16px">This publication needs JavaScript to display its pages.</p></noscript>
+    <script type="application/json" id="fs-data">{"title":"TEST","animations":[{"id":"animation-mv6mfx8p-1g71r","targetId":"image-mv6mfrkr-sqhvu","type":"fade-in","start":0.4,"delay":0,"duration":0.8,"easing":"ease-out","from":0,"to":1,"loop":false,"alternate":false}],"pages":[{"id":"pdf-page-1","name":"Page 1","width":595.276,"height":841.89,"background":"pages/page-001.png","overlays":[]},{"id":"pdf-page-2","name":"Page 2","width":595.276,"height":841.89,"background":"pages/page-002.png","overlays":[{"id":"image-mv6mfrkr-sqhvu","type":"image","label":"Gemini_Generated_Image_6vbnt46vbnt46vbn.jpeg","x":0,"y":0,"width":595,"height":842,"rotation":0,"opacity":1,"visible":true,"fontSize":32,"src":"assets/asset-3edc1bec-2e9fj.jpg","fit":"cover"}]},{"id":"pdf-page-3","name":"Page 3","width":595.276,"height":841.89,"background":"pages/page-003.png","overlays":[]},{"id":"pdf-page-4","name":"Page 4","width":595.276,"height":841.89,"background":"pages/page-004.png","overlays":[{"id":"slideshow-mv6mj3ki-z1zk6","type":"slideshow","label":"Slideshow","x":51,"y":513,"width":280,"height":271,"rotation":0,"opacity":1,"visible":true,"fontSize":24,"style":{"shape":"rounded","radius":27},"fit":"cover","slides":[{"id":"slide-mv6mj3ki-rsewp","src":"assets/asset-ba541b36-1sfi3.jpg","alt":"Gemini_Generated_Image_bzvcdlbzvcdlbzvc"},{"id":"slide-mv6mj3ki-w2v08","src":"assets/asset-e25dba23-1vlmv.jpg","alt":"Gemini_Generated_Image_iu5irwiu5irwiu5i"},{"id":"slide-mv6mj3ki-inwpk","src":"assets/asset-1cbf3ffe-l4yn.jpg","alt":"Gemini_Generated_Image_osmeaxosmeaxosme (1)"}],"autoplay":true,"looping":true,"duration":1,"transition":"fade","transitionDuration":0.6,"showControls":true,"showIndicators":"dots","pauseOnHover":false,"startIndex":0}]},{"id":"pdf-page-5","name":"Page 5","width":595.276,"height":841.89,"background":"pages/page-005.png","overlays":[]},{"id":"pdf-page-6","name":"Page 6","width":595.276,"height":841.89,"background":"pages/page-006.png","overlays":[]},{"id":"pdf-page-7","name":"Page 7","width":595.276,"height":841.89,"background":"pages/page-007.png","overlays":[]},{"id":"pdf-page-8","name":"Page 8","width":595.276,"height":841.89,"background":"pages/page-008.png","overlays":[]},{"id":"pdf-page-9","name":"Page 9","width":595.276,"height":841.89,"background":"pages/page-009.png","overlays":[]}]}</script>
+    <script>/* StPageFlip (page-flip) 2.0.7 - Copyright (c) 2020 Nodlik - MIT License */
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).St={})}(this,(function(t){"use strict";class e{constructor(t,e){this.state={angle:0,area:[],position:{x:0,y:0},hardAngle:0,hardDrawingAngle:0},this.createdDensity=e,this.nowDrawingDensity=this.createdDensity,this.render=t}setDensity(t){this.createdDensity=t,this.nowDrawingDensity=t}setDrawingDensity(t){this.nowDrawingDensity=t}setPosition(t){this.state.position=t}setAngle(t){this.state.angle=t}setArea(t){this.state.area=t}setHardDrawingAngle(t){this.state.hardDrawingAngle=t}setHardAngle(t){this.state.hardAngle=t,this.state.hardDrawingAngle=t}setOrientation(t){this.orientation=t}getDrawingDensity(){return this.nowDrawingDensity}getDensity(){return this.createdDensity}getHardAngle(){return this.state.hardAngle}}class i extends e{constructor(t,e,i){super(t,i),this.image=null,this.isLoad=!1,this.loadingAngle=0,this.image=new Image,this.image.src=e}draw(t){const e=this.render.getContext(),i=this.render.convertToGlobal(this.state.position),s=this.render.getRect().pageWidth,n=this.render.getRect().height;e.save(),e.translate(i.x,i.y),e.beginPath();for(let t of this.state.area)null!==t&&(t=this.render.convertToGlobal(t),e.lineTo(t.x-i.x,t.y-i.y));e.rotate(this.state.angle),e.clip(),this.isLoad?e.drawImage(this.image,0,0,s,n):this.drawLoader(e,{x:0,y:0},s,n),e.restore()}simpleDraw(t){const e=this.render.getRect(),i=this.render.getContext(),s=e.pageWidth,n=e.height,h=1===t?e.left+e.pageWidth:e.left,r=e.top;this.isLoad?i.drawImage(this.image,h,r,s,n):this.drawLoader(i,{x:h,y:r},s,n)}drawLoader(t,e,i,s){t.beginPath(),t.strokeStyle="rgb(200, 200, 200)",t.fillStyle="rgb(255, 255, 255)",t.lineWidth=1,t.rect(e.x+1,e.y+1,i-1,s-1),t.stroke(),t.fill();const n={x:e.x+i/2,y:e.y+s/2};t.beginPath(),t.lineWidth=10,t.arc(n.x,n.y,20,this.loadingAngle,3*Math.PI/2+this.loadingAngle),t.stroke(),t.closePath(),this.loadingAngle+=.07,this.loadingAngle>=2*Math.PI&&(this.loadingAngle=0)}load(){this.isLoad||(this.image.onload=()=>{this.isLoad=!0})}newTemporaryCopy(){return this}getTemporaryCopy(){return this}hideTemporaryCopy(){}}class s{constructor(t,e){this.pages=[],this.currentPageIndex=0,this.currentSpreadIndex=0,this.landscapeSpread=[],this.portraitSpread=[],this.render=e,this.app=t,this.currentPageIndex=0,this.isShowCover=this.app.getSettings().showCover}destroy(){this.pages=[]}createSpread(){this.landscapeSpread=[],this.portraitSpread=[];for(let t=0;t<this.pages.length;t++)this.portraitSpread.push([t]);let t=0;this.isShowCover&&(this.pages[0].setDensity("hard"),this.landscapeSpread.push([t]),t++);for(let e=t;e<this.pages.length;e+=2)e<this.pages.length-1?this.landscapeSpread.push([e,e+1]):(this.landscapeSpread.push([e]),this.pages[e].setDensity("hard"))}getSpread(){return"landscape"===this.render.getOrientation()?this.landscapeSpread:this.portraitSpread}getSpreadIndexByPage(t){const e=this.getSpread();for(let i=0;i<e.length;i++)if(t===e[i][0]||t===e[i][1])return i;return null}getPageCount(){return this.pages.length}getPages(){return this.pages}getPage(t){if(t>=0&&t<this.pages.length)return this.pages[t];throw new Error("Invalid page number")}nextBy(t){const e=this.pages.indexOf(t);return e<this.pages.length-1?this.pages[e+1]:null}prevBy(t){const e=this.pages.indexOf(t);return e>0?this.pages[e-1]:null}getFlippingPage(t){const e=this.currentSpreadIndex;if("portrait"===this.render.getOrientation())return 0===t?this.pages[e].newTemporaryCopy():this.pages[e-1];{const i=0===t?this.getSpread()[e+1]:this.getSpread()[e-1];return 1===i.length||0===t?this.pages[i[0]]:this.pages[i[1]]}}getBottomPage(t){const e=this.currentSpreadIndex;if("portrait"===this.render.getOrientation())return 0===t?this.pages[e+1]:this.pages[e-1];{const i=0===t?this.getSpread()[e+1]:this.getSpread()[e-1];return 1===i.length?this.pages[i[0]]:0===t?this.pages[i[1]]:this.pages[i[0]]}}showNext(){this.currentSpreadIndex<this.getSpread().length&&(this.currentSpreadIndex++,this.showSpread())}showPrev(){this.currentSpreadIndex>0&&(this.currentSpreadIndex--,this.showSpread())}getCurrentPageIndex(){return this.currentPageIndex}show(t=null){if(null===t&&(t=this.currentPageIndex),t<0||t>=this.pages.length)return;const e=this.getSpreadIndexByPage(t);null!==e&&(this.currentSpreadIndex=e,this.showSpread())}getCurrentSpreadIndex(){return this.currentSpreadIndex}setCurrentSpreadIndex(t){if(!(t>=0&&t<this.getSpread().length))throw new Error("Invalid page");this.currentSpreadIndex=t}showSpread(){const t=this.getSpread()[this.currentSpreadIndex];2===t.length?(this.render.setLeftPage(this.pages[t[0]]),this.render.setRightPage(this.pages[t[1]])):"landscape"===this.render.getOrientation()&&t[0]===this.pages.length-1?(this.render.setLeftPage(this.pages[t[0]]),this.render.setRightPage(null)):(this.render.setLeftPage(null),this.render.setRightPage(this.pages[t[0]])),this.currentPageIndex=t[0],this.app.updatePageIndex(this.currentPageIndex)}}class n extends s{constructor(t,e,i){super(t,e),this.imagesHref=i}load(){for(const t of this.imagesHref){const e=new i(this.render,t,"soft");e.load(),this.pages.push(e)}this.createSpread()}}class h{static GetDistanceBetweenTwoPoint(t,e){return null===t||null===e?1/0:Math.sqrt(Math.pow(e.x-t.x,2)+Math.pow(e.y-t.y,2))}static GetSegmentLength(t){return h.GetDistanceBetweenTwoPoint(t[0],t[1])}static GetAngleBetweenTwoLine(t,e){const i=t[0].y-t[1].y,s=e[0].y-e[1].y,n=t[1].x-t[0].x,h=e[1].x-e[0].x;return Math.acos((i*s+n*h)/(Math.sqrt(i*i+n*n)*Math.sqrt(s*s+h*h)))}static PointInRect(t,e){return null===e?null:e.x>=t.left&&e.x<=t.width+t.left&&e.y>=t.top&&e.y<=t.top+t.height?e:null}static GetRotatedPoint(t,e,i){return{x:t.x*Math.cos(i)+t.y*Math.sin(i)+e.x,y:t.y*Math.cos(i)-t.x*Math.sin(i)+e.y}}static LimitPointToCircle(t,e,i){if(h.GetDistanceBetweenTwoPoint(t,i)<=e)return i;const s=t.x,n=t.y,r=i.x,o=i.y;let a=Math.sqrt(Math.pow(e,2)*Math.pow(s-r,2)/(Math.pow(s-r,2)+Math.pow(n-o,2)))+s;i.x<0&&(a*=-1);let g=(a-s)*(n-o)/(s-r)+n;return s-r+n===0&&(g=e),{x:a,y:g}}static GetIntersectBetweenTwoSegment(t,e,i){return h.PointInRect(t,h.GetIntersectBeetwenTwoLine(e,i))}static GetIntersectBeetwenTwoLine(t,e){const i=t[0].y-t[1].y,s=e[0].y-e[1].y,n=t[1].x-t[0].x,h=e[1].x-e[0].x,r=t[0].x*t[1].y-t[1].x*t[0].y,o=e[0].x*e[1].y-e[1].x*e[0].y,a=i*o-s*r,g=n*o-h*r,l=-(r*h-o*n)/(i*h-s*n),d=-(i*o-s*r)/(i*h-s*n);if(isFinite(l)&&isFinite(d))return{x:l,y:d};if(Math.abs(a-g)<.1)throw new Error("Segment included");return null}static GetCordsFromTwoPoint(t,e){const i=Math.abs(t.x-e.x),s=Math.abs(t.y-e.y),n=Math.max(i,s),h=[t];function r(t,e,i,s,n){return e>t?t+n*(i/s):e<t?t-n*(i/s):t}for(let o=1;o<=n;o+=1)h.push({x:r(t.x,e.x,i,n,o),y:r(t.y,e.y,s,n,o)});return h}}class r extends e{constructor(t,e,i){super(t,i),this.copiedElement=null,this.temporaryCopy=null,this.isLoad=!1,this.element=e,this.element.classList.add("stf__item"),this.element.classList.add("--"+i)}newTemporaryCopy(){return"hard"===this.nowDrawingDensity?this:(null===this.temporaryCopy&&(this.copiedElement=this.element.cloneNode(!0),this.element.parentElement.appendChild(this.copiedElement),this.temporaryCopy=new r(this.render,this.copiedElement,this.nowDrawingDensity)),this.getTemporaryCopy())}getTemporaryCopy(){return this.temporaryCopy}hideTemporaryCopy(){null!==this.temporaryCopy&&(this.copiedElement.remove(),this.copiedElement=null,this.temporaryCopy=null)}draw(t){const e=t||this.nowDrawingDensity,i=this.render.convertToGlobal(this.state.position),s=this.render.getRect().pageWidth,n=this.render.getRect().height;this.element.classList.remove("--simple");const h=`\n            display: block;\n            z-index: ${this.element.style.zIndex};\n            left: 0;\n            top: 0;\n            width: ${s}px;\n            height: ${n}px;\n        `;"hard"===e?this.drawHard(h):this.drawSoft(i,h)}drawHard(t=""){const e=this.render.getRect().left+this.render.getRect().width/2,i=this.state.hardDrawingAngle,s=t+"\n                backface-visibility: hidden;\n                -webkit-backface-visibility: hidden;\n                clip-path: none;\n                -webkit-clip-path: none;\n            "+(0===this.orientation?`transform-origin: ${this.render.getRect().pageWidth}px 0; \n                   transform: translate3d(0, 0, 0) rotateY(${i}deg);`:`transform-origin: 0 0; \n                   transform: translate3d(${e}px, 0, 0) rotateY(${i}deg);`);this.element.style.cssText=s}drawSoft(t,e=""){let i="polygon( ";for(const t of this.state.area)if(null!==t){let e=1===this.render.getDirection()?{x:-t.x+this.state.position.x,y:t.y-this.state.position.y}:{x:t.x-this.state.position.x,y:t.y-this.state.position.y};e=h.GetRotatedPoint(e,{x:0,y:0},this.state.angle),i+=e.x+"px "+e.y+"px, "}i=i.slice(0,-2),i+=")";const s=e+`transform-origin: 0 0; clip-path: ${i}; -webkit-clip-path: ${i};`+(this.render.isSafari()&&0===this.state.angle?`transform: translate(${t.x}px, ${t.y}px);`:`transform: translate3d(${t.x}px, ${t.y}px, 0) rotate(${this.state.angle}rad);`);this.element.style.cssText=s}simpleDraw(t){const e=this.render.getRect(),i=e.pageWidth,s=e.height,n=1===t?e.left+e.pageWidth:e.left,h=e.top;this.element.classList.add("--simple"),this.element.style.cssText=`\n            position: absolute; \n            display: block; \n            height: ${s}px; \n            left: ${n}px; \n            top: ${h}px; \n            width: ${i}px; \n            z-index: ${this.render.getSettings().startZIndex+1};`}getElement(){return this.element}load(){this.isLoad=!0}setOrientation(t){super.setOrientation(t),this.element.classList.remove("--left","--right"),this.element.classList.add(1===t?"--right":"--left")}setDrawingDensity(t){this.element.classList.remove("--soft","--hard"),this.element.classList.add("--"+t),super.setDrawingDensity(t)}}class o extends s{constructor(t,e,i,s){super(t,e),this.element=i,this.pagesElement=s}load(){for(const t of this.pagesElement){const e=new r(this.render,t,"hard"===t.dataset.density?"hard":"soft");e.load(),this.pages.push(e)}this.createSpread()}}class a{constructor(t,e,i,s){this.direction=t,this.corner=e,this.topIntersectPoint=null,this.sideIntersectPoint=null,this.bottomIntersectPoint=null,this.pageWidth=parseInt(i,10),this.pageHeight=parseInt(s,10)}calc(t){try{return this.position=this.calcAngleAndPosition(t),this.calculateIntersectPoint(this.position),!0}catch(t){return!1}}getFlippingClipArea(){const t=[];let e=!1;return t.push(this.rect.topLeft),t.push(this.topIntersectPoint),null===this.sideIntersectPoint?e=!0:(t.push(this.sideIntersectPoint),null===this.bottomIntersectPoint&&(e=!1)),t.push(this.bottomIntersectPoint),(e||"bottom"===this.corner)&&t.push(this.rect.bottomLeft),t}getBottomClipArea(){const t=[];return t.push(this.topIntersectPoint),"top"===this.corner?t.push({x:this.pageWidth,y:0}):(null!==this.topIntersectPoint&&t.push({x:this.pageWidth,y:0}),t.push({x:this.pageWidth,y:this.pageHeight})),null!==this.sideIntersectPoint?h.GetDistanceBetweenTwoPoint(this.sideIntersectPoint,this.topIntersectPoint)>=10&&t.push(this.sideIntersectPoint):"top"===this.corner&&t.push({x:this.pageWidth,y:this.pageHeight}),t.push(this.bottomIntersectPoint),t.push(this.topIntersectPoint),t}getAngle(){return 0===this.direction?-this.angle:this.angle}getRect(){return this.rect}getPosition(){return this.position}getActiveCorner(){return 0===this.direction?this.rect.topLeft:this.rect.topRight}getDirection(){return this.direction}getFlippingProgress(){return Math.abs((this.position.x-this.pageWidth)/(2*this.pageWidth)*100)}getCorner(){return this.corner}getBottomPagePosition(){return 1===this.direction?{x:this.pageWidth,y:0}:{x:0,y:0}}getShadowStartPoint(){return"top"===this.corner?this.topIntersectPoint:null!==this.sideIntersectPoint?this.sideIntersectPoint:this.topIntersectPoint}getShadowAngle(){const t=h.GetAngleBetweenTwoLine(this.getSegmentToShadowLine(),[{x:0,y:0},{x:this.pageWidth,y:0}]);return 0===this.direction?t:Math.PI-t}calcAngleAndPosition(t){let e=t;if(this.updateAngleAndGeometry(e),e="top"===this.corner?this.checkPositionAtCenterLine(e,{x:0,y:0},{x:0,y:this.pageHeight}):this.checkPositionAtCenterLine(e,{x:0,y:this.pageHeight},{x:0,y:0}),Math.abs(e.x-this.pageWidth)<1&&Math.abs(e.y)<1)throw new Error("Point is too small");return e}updateAngleAndGeometry(t){this.angle=this.calculateAngle(t),this.rect=this.getPageRect(t)}calculateAngle(t){const e=this.pageWidth-t.x+1,i="bottom"===this.corner?this.pageHeight-t.y:t.y;let s=2*Math.acos(e/Math.sqrt(i*i+e*e));i<0&&(s=-s);const n=Math.PI-s;if(!isFinite(s)||n>=0&&n<.003)throw new Error("The G point is too small");return"bottom"===this.corner&&(s=-s),s}getPageRect(t){return"top"===this.corner?this.getRectFromBasePoint([{x:0,y:0},{x:this.pageWidth,y:0},{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}],t):this.getRectFromBasePoint([{x:0,y:-this.pageHeight},{x:this.pageWidth,y:-this.pageHeight},{x:0,y:0},{x:this.pageWidth,y:0}],t)}getRectFromBasePoint(t,e){return{topLeft:this.getRotatedPoint(t[0],e),topRight:this.getRotatedPoint(t[1],e),bottomLeft:this.getRotatedPoint(t[2],e),bottomRight:this.getRotatedPoint(t[3],e)}}getRotatedPoint(t,e){return{x:t.x*Math.cos(this.angle)+t.y*Math.sin(this.angle)+e.x,y:t.y*Math.cos(this.angle)-t.x*Math.sin(this.angle)+e.y}}calculateIntersectPoint(t){const e={left:-1,top:-1,width:this.pageWidth+2,height:this.pageHeight+2};"top"===this.corner?(this.topIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.topRight],[{x:0,y:0},{x:this.pageWidth,y:0}]),this.sideIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.bottomLeft],[{x:this.pageWidth,y:0},{x:this.pageWidth,y:this.pageHeight}]),this.bottomIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.bottomLeft,this.rect.bottomRight],[{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}])):(this.topIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.topLeft,this.rect.topRight],[{x:0,y:0},{x:this.pageWidth,y:0}]),this.sideIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[t,this.rect.topLeft],[{x:this.pageWidth,y:0},{x:this.pageWidth,y:this.pageHeight}]),this.bottomIntersectPoint=h.GetIntersectBetweenTwoSegment(e,[this.rect.bottomLeft,this.rect.bottomRight],[{x:0,y:this.pageHeight},{x:this.pageWidth,y:this.pageHeight}]))}checkPositionAtCenterLine(t,e,i){let s=t;const n=h.LimitPointToCircle(e,this.pageWidth,s);s!==n&&(s=n,this.updateAngleAndGeometry(s));const r=Math.sqrt(Math.pow(this.pageWidth,2)+Math.pow(this.pageHeight,2));let o=this.rect.bottomRight,a=this.rect.topLeft;if("bottom"===this.corner&&(o=this.rect.topRight,a=this.rect.bottomLeft),o.x<=0){const t=h.LimitPointToCircle(i,r,a);t!==s&&(s=t,this.updateAngleAndGeometry(s))}return s}getSegmentToShadowLine(){const t=this.getShadowStartPoint();return[t,t!==this.sideIntersectPoint&&null!==this.sideIntersectPoint?this.sideIntersectPoint:this.bottomIntersectPoint]}}class g{constructor(t,e){this.flippingPage=null,this.bottomPage=null,this.calc=null,this.state="read",this.render=t,this.app=e}fold(t){this.setState("user_fold"),null===this.calc&&this.start(t),this.do(this.render.convertToPage(t))}flip(t){if(this.app.getSettings().disableFlipByClick&&!this.isPointOnCorners(t))return;if(null!==this.calc&&this.render.finishAnimation(),!this.start(t))return;const e=this.getBoundsRect();this.setState("flipping");const i=e.height/10,s="bottom"===this.calc.getCorner()?e.height-i:i,n="bottom"===this.calc.getCorner()?e.height:0;this.calc.calc({x:e.pageWidth-i,y:s}),this.animateFlippingTo({x:e.pageWidth-i,y:s},{x:-e.pageWidth,y:n},!0)}start(t){this.reset();const e=this.render.convertToBook(t),i=this.getBoundsRect(),s=this.getDirectionByPoint(e),n=e.y>=i.height/2?"bottom":"top";if(!this.checkDirection(s))return!1;try{if(this.flippingPage=this.app.getPageCollection().getFlippingPage(s),this.bottomPage=this.app.getPageCollection().getBottomPage(s),"landscape"===this.render.getOrientation())if(1===s){const t=this.app.getPageCollection().nextBy(this.flippingPage);null!==t&&this.flippingPage.getDensity()!==t.getDensity()&&(this.flippingPage.setDrawingDensity("hard"),t.setDrawingDensity("hard"))}else{const t=this.app.getPageCollection().prevBy(this.flippingPage);null!==t&&this.flippingPage.getDensity()!==t.getDensity()&&(this.flippingPage.setDrawingDensity("hard"),t.setDrawingDensity("hard"))}return this.render.setDirection(s),this.calc=new a(s,n,i.pageWidth.toString(10),i.height.toString(10)),!0}catch(t){return!1}}do(t){if(null!==this.calc&&this.calc.calc(t)){const t=this.calc.getFlippingProgress();this.bottomPage.setArea(this.calc.getBottomClipArea()),this.bottomPage.setPosition(this.calc.getBottomPagePosition()),this.bottomPage.setAngle(0),this.bottomPage.setHardAngle(0),this.flippingPage.setArea(this.calc.getFlippingClipArea()),this.flippingPage.setPosition(this.calc.getActiveCorner()),this.flippingPage.setAngle(this.calc.getAngle()),0===this.calc.getDirection()?this.flippingPage.setHardAngle(90*(200-2*t)/100):this.flippingPage.setHardAngle(-90*(200-2*t)/100),this.render.setPageRect(this.calc.getRect()),this.render.setBottomPage(this.bottomPage),this.render.setFlippingPage(this.flippingPage),this.render.setShadowData(this.calc.getShadowStartPoint(),this.calc.getShadowAngle(),t,this.calc.getDirection())}}flipToPage(t,e){const i=this.app.getPageCollection().getCurrentSpreadIndex(),s=this.app.getPageCollection().getSpreadIndexByPage(t);try{s>i&&(this.app.getPageCollection().setCurrentSpreadIndex(s-1),this.flipNext(e)),s<i&&(this.app.getPageCollection().setCurrentSpreadIndex(s+1),this.flipPrev(e))}catch(t){}}flipNext(t){this.flip({x:this.render.getRect().left+2*this.render.getRect().pageWidth-10,y:"top"===t?1:this.render.getRect().height-2})}flipPrev(t){this.flip({x:10,y:"top"===t?1:this.render.getRect().height-2})}stopMove(){if(null===this.calc)return;const t=this.calc.getPosition(),e=this.getBoundsRect(),i="bottom"===this.calc.getCorner()?e.height:0;t.x<=0?this.animateFlippingTo(t,{x:-e.pageWidth,y:i},!0):this.animateFlippingTo(t,{x:e.pageWidth,y:i},!1)}showCorner(t){if(!this.checkState("read","fold_corner"))return;const e=this.getBoundsRect(),i=e.pageWidth;if(this.isPointOnCorners(t))if(null===this.calc){if(!this.start(t))return;this.setState("fold_corner"),this.calc.calc({x:i-1,y:1});const s=50,n="bottom"===this.calc.getCorner()?e.height-1:1,h="bottom"===this.calc.getCorner()?e.height-s:s;this.animateFlippingTo({x:i-1,y:n},{x:i-s,y:h},!1,!1)}else this.do(this.render.convertToPage(t));else this.setState("read"),this.render.finishAnimation(),this.stopMove()}animateFlippingTo(t,e,i,s=!0){const n=h.GetCordsFromTwoPoint(t,e),r=[];for(const t of n)r.push(()=>this.do(t));const o=this.getAnimationDuration(n.length);this.render.startAnimation(r,o,()=>{this.calc&&(i&&(1===this.calc.getDirection()?this.app.turnToPrevPage():this.app.turnToNextPage()),s&&(this.render.setBottomPage(null),this.render.setFlippingPage(null),this.render.clearShadow(),this.setState("read"),this.reset()))})}getCalculation(){return this.calc}getState(){return this.state}setState(t){this.state!==t&&(this.app.updateState(t),this.state=t)}getDirectionByPoint(t){const e=this.getBoundsRect();if("portrait"===this.render.getOrientation()){if(t.x-e.pageWidth<=e.width/5)return 1}else if(t.x<e.width/2)return 1;return 0}getAnimationDuration(t){const e=this.app.getSettings().flippingTime;return t>=1e3?e:t/1e3*e}checkDirection(t){return 0===t?this.app.getCurrentPageIndex()<this.app.getPageCount()-1:this.app.getCurrentPageIndex()>=1}reset(){this.calc=null,this.flippingPage=null,this.bottomPage=null}getBoundsRect(){return this.render.getRect()}checkState(...t){for(const e of t)if(this.state===e)return!0;return!1}isPointOnCorners(t){const e=this.getBoundsRect(),i=e.pageWidth,s=Math.sqrt(Math.pow(i,2)+Math.pow(e.height,2))/5,n=this.render.convertToBook(t);return n.x>0&&n.y>0&&n.x<e.width&&n.y<e.height&&(n.x<s||n.x>e.width-s)&&(n.y<s||n.y>e.height-s)}}class l{constructor(t,e){this.leftPage=null,this.rightPage=null,this.flippingPage=null,this.bottomPage=null,this.direction=null,this.orientation=null,this.shadow=null,this.animation=null,this.pageRect=null,this.boundsRect=null,this.timer=0,this.safari=!1,this.setting=e,this.app=t;const i=new RegExp("Version\\/[\\d\\.]+.*Safari/");this.safari=null!==i.exec(window.navigator.userAgent)}render(t){if(null!==this.animation){const e=Math.round((t-this.animation.startedAt)/this.animation.durationFrame);e<this.animation.frames.length?this.animation.frames[e]():(this.animation.onAnimateEnd(),this.animation=null)}this.timer=t,this.drawFrame()}start(){this.update();const t=e=>{this.render(e),requestAnimationFrame(t)};requestAnimationFrame(t)}startAnimation(t,e,i){this.finishAnimation(),this.animation={frames:t,duration:e,durationFrame:e/t.length,onAnimateEnd:i,startedAt:this.timer}}finishAnimation(){null!==this.animation&&(this.animation.frames[this.animation.frames.length-1](),null!==this.animation.onAnimateEnd&&this.animation.onAnimateEnd()),this.animation=null}update(){this.boundsRect=null;const t=this.calculateBoundsRect();this.orientation!==t&&(this.orientation=t,this.app.updateOrientation(t))}calculateBoundsRect(){let t="landscape";const e=this.getBlockWidth(),i=e/2,s=this.getBlockHeight()/2,n=this.setting.width/this.setting.height;let h=this.setting.width,r=this.setting.height,o=i-h;return"stretch"===this.setting.size?(e<2*this.setting.minWidth&&this.app.getSettings().usePortrait&&(t="portrait"),h="portrait"===t?this.getBlockWidth():this.getBlockWidth()/2,h>this.setting.maxWidth&&(h=this.setting.maxWidth),r=h/n,r>this.getBlockHeight()&&(r=this.getBlockHeight(),h=r*n),o="portrait"===t?i-h/2-h:i-h):e<2*h&&this.app.getSettings().usePortrait&&(t="portrait",o=i-h/2-h),this.boundsRect={left:o,top:s-r/2,width:2*h,height:r,pageWidth:h},t}setShadowData(t,e,i,s){if(!this.app.getSettings().drawShadow)return;const n=100*this.getSettings().maxShadowOpacity;this.shadow={pos:t,angle:e,width:3*this.getRect().pageWidth/4*i/100,opacity:(100-i)*n/100/100,direction:s,progress:2*i}}clearShadow(){this.shadow=null}getBlockWidth(){return this.app.getUI().getDistElement().offsetWidth}getBlockHeight(){return this.app.getUI().getDistElement().offsetHeight}getDirection(){return this.direction}getRect(){return null===this.boundsRect&&this.calculateBoundsRect(),this.boundsRect}getSettings(){return this.app.getSettings()}getOrientation(){return this.orientation}setPageRect(t){this.pageRect=t}setDirection(t){this.direction=t}setRightPage(t){null!==t&&t.setOrientation(1),this.rightPage=t}setLeftPage(t){null!==t&&t.setOrientation(0),this.leftPage=t}setBottomPage(t){null!==t&&t.setOrientation(1===this.direction?0:1),this.bottomPage=t}setFlippingPage(t){null!==t&&t.setOrientation(0===this.direction&&"portrait"!==this.orientation?0:1),this.flippingPage=t}convertToBook(t){const e=this.getRect();return{x:t.x-e.left,y:t.y-e.top}}isSafari(){return this.safari}convertToPage(t,e){e||(e=this.direction);const i=this.getRect();return{x:0===e?t.x-i.left-i.width/2:i.width/2-t.x+i.left,y:t.y-i.top}}convertToGlobal(t,e){if(e||(e=this.direction),null==t)return null;const i=this.getRect();return{x:0===e?t.x+i.left+i.width/2:i.width/2-t.x+i.left,y:t.y+i.top}}convertRectToGlobal(t,e){return e||(e=this.direction),{topLeft:this.convertToGlobal(t.topLeft,e),topRight:this.convertToGlobal(t.topRight,e),bottomLeft:this.convertToGlobal(t.bottomLeft,e),bottomRight:this.convertToGlobal(t.bottomRight,e)}}}class d extends l{constructor(t,e,i){super(t,e),this.canvas=i,this.ctx=i.getContext("2d")}getContext(){return this.ctx}reload(){}drawFrame(){this.clear(),"portrait"!==this.orientation&&null!=this.leftPage&&this.leftPage.simpleDraw(0),null!=this.rightPage&&this.rightPage.simpleDraw(1),null!=this.bottomPage&&this.bottomPage.draw(),this.drawBookShadow(),null!=this.flippingPage&&this.flippingPage.draw(),null!=this.shadow&&(this.drawOuterShadow(),this.drawInnerShadow());const t=this.getRect();"portrait"===this.orientation&&(this.ctx.beginPath(),this.ctx.rect(t.left+t.pageWidth,t.top,t.width,t.height),this.ctx.clip())}drawBookShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath();const e=t.width/20;this.ctx.rect(t.left,t.top,t.width,t.height);const i={x:t.left+t.width/2-e/2,y:0};this.ctx.translate(i.x,i.y);const s=this.ctx.createLinearGradient(0,0,e,0);s.addColorStop(0,"rgba(0, 0, 0, 0)"),s.addColorStop(.4,"rgba(0, 0, 0, 0.2)"),s.addColorStop(.49,"rgba(0, 0, 0, 0.1)"),s.addColorStop(.5,"rgba(0, 0, 0, 0.5)"),s.addColorStop(.51,"rgba(0, 0, 0, 0.4)"),s.addColorStop(1,"rgba(0, 0, 0, 0)"),this.ctx.clip(),this.ctx.fillStyle=s,this.ctx.fillRect(0,0,e,2*t.height),this.ctx.restore()}drawOuterShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath(),this.ctx.rect(t.left,t.top,t.width,t.height);const e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y});this.ctx.translate(e.x,e.y),this.ctx.rotate(Math.PI+this.shadow.angle+Math.PI/2);const i=this.ctx.createLinearGradient(0,0,this.shadow.width,0);0===this.shadow.direction?(this.ctx.translate(0,-100),i.addColorStop(0,"rgba(0, 0, 0, "+this.shadow.opacity+")"),i.addColorStop(1,"rgba(0, 0, 0, 0)")):(this.ctx.translate(-this.shadow.width,-100),i.addColorStop(0,"rgba(0, 0, 0, 0)"),i.addColorStop(1,"rgba(0, 0, 0, "+this.shadow.opacity+")")),this.ctx.clip(),this.ctx.fillStyle=i,this.ctx.fillRect(0,0,this.shadow.width,2*t.height),this.ctx.restore()}drawInnerShadow(){const t=this.getRect();this.ctx.save(),this.ctx.beginPath();const e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y}),i=this.convertRectToGlobal(this.pageRect);this.ctx.moveTo(i.topLeft.x,i.topLeft.y),this.ctx.lineTo(i.topRight.x,i.topRight.y),this.ctx.lineTo(i.bottomRight.x,i.bottomRight.y),this.ctx.lineTo(i.bottomLeft.x,i.bottomLeft.y),this.ctx.translate(e.x,e.y),this.ctx.rotate(Math.PI+this.shadow.angle+Math.PI/2);const s=3*this.shadow.width/4,n=this.ctx.createLinearGradient(0,0,s,0);0===this.shadow.direction?(this.ctx.translate(-s,-100),n.addColorStop(1,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(.9,"rgba(0, 0, 0, 0.05)"),n.addColorStop(.7,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(0,"rgba(0, 0, 0, 0)")):(this.ctx.translate(0,-100),n.addColorStop(0,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(.1,"rgba(0, 0, 0, 0.05)"),n.addColorStop(.3,"rgba(0, 0, 0, "+this.shadow.opacity+")"),n.addColorStop(1,"rgba(0, 0, 0, 0)")),this.ctx.clip(),this.ctx.fillStyle=n,this.ctx.fillRect(0,0,s,2*t.height),this.ctx.restore()}clear(){this.ctx.fillStyle="white",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height)}}class p{constructor(t,e,i){this.touchPoint=null,this.swipeTimeout=250,this.onResize=()=>{this.update()},this.onMouseDown=t=>{if(this.checkTarget(t.target)){const e=this.getMousePos(t.clientX,t.clientY);this.app.startUserTouch(e),t.preventDefault()}},this.onTouchStart=t=>{if(this.checkTarget(t.target)&&t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);this.touchPoint={point:i,time:Date.now()},setTimeout(()=>{null!==this.touchPoint&&this.app.startUserTouch(i)},this.swipeTimeout),this.app.getSettings().mobileScrollSupport||t.preventDefault()}},this.onMouseUp=t=>{const e=this.getMousePos(t.clientX,t.clientY);this.app.userStop(e)},this.onMouseMove=t=>{const e=this.getMousePos(t.clientX,t.clientY);this.app.userMove(e,!1)},this.onTouchMove=t=>{if(t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);this.app.getSettings().mobileScrollSupport?(null!==this.touchPoint&&(Math.abs(this.touchPoint.point.x-i.x)>10||"read"!==this.app.getState())&&t.cancelable&&this.app.userMove(i,!0),"read"!==this.app.getState()&&t.preventDefault()):this.app.userMove(i,!0)}},this.onTouchEnd=t=>{if(t.changedTouches.length>0){const e=t.changedTouches[0],i=this.getMousePos(e.clientX,e.clientY);let s=!1;if(null!==this.touchPoint){const t=i.x-this.touchPoint.point.x,e=Math.abs(i.y-this.touchPoint.point.y);Math.abs(t)>this.swipeDistance&&e<2*this.swipeDistance&&Date.now()-this.touchPoint.time<this.swipeTimeout&&(t>0?this.app.flipPrev(this.touchPoint.point.y<this.app.getRender().getRect().height/2?"top":"bottom"):this.app.flipNext(this.touchPoint.point.y<this.app.getRender().getRect().height/2?"top":"bottom"),s=!0),this.touchPoint=null}this.app.userStop(i,s)}},this.parentElement=t,t.classList.add("stf__parent"),t.insertAdjacentHTML("afterbegin",'<div class="stf__wrapper"></div>'),this.wrapper=t.querySelector(".stf__wrapper"),this.app=e;const s=this.app.getSettings().usePortrait?1:2;t.style.minWidth=i.minWidth*s+"px",t.style.minHeight=i.minHeight+"px","fixed"===i.size&&(t.style.minWidth=i.width*s+"px",t.style.minHeight=i.height+"px"),i.autoSize&&(t.style.width="100%",t.style.maxWidth=2*i.maxWidth+"px"),t.style.display="block",window.addEventListener("resize",this.onResize,!1),this.swipeDistance=i.swipeDistance}destroy(){this.app.getSettings().useMouseEvents&&this.removeHandlers(),this.distElement.remove(),this.wrapper.remove()}getDistElement(){return this.distElement}getWrapper(){return this.wrapper}setOrientationStyle(t){this.wrapper.classList.remove("--portrait","--landscape"),"portrait"===t?(this.app.getSettings().autoSize&&(this.wrapper.style.paddingBottom=this.app.getSettings().height/this.app.getSettings().width*100+"%"),this.wrapper.classList.add("--portrait")):(this.app.getSettings().autoSize&&(this.wrapper.style.paddingBottom=this.app.getSettings().height/(2*this.app.getSettings().width)*100+"%"),this.wrapper.classList.add("--landscape")),this.update()}removeHandlers(){window.removeEventListener("resize",this.onResize),this.distElement.removeEventListener("mousedown",this.onMouseDown),this.distElement.removeEventListener("touchstart",this.onTouchStart),window.removeEventListener("mousemove",this.onMouseMove),window.removeEventListener("touchmove",this.onTouchMove),window.removeEventListener("mouseup",this.onMouseUp),window.removeEventListener("touchend",this.onTouchEnd)}setHandlers(){window.addEventListener("resize",this.onResize,!1),this.app.getSettings().useMouseEvents&&(this.distElement.addEventListener("mousedown",this.onMouseDown),this.distElement.addEventListener("touchstart",this.onTouchStart),window.addEventListener("mousemove",this.onMouseMove),window.addEventListener("touchmove",this.onTouchMove,{passive:!this.app.getSettings().mobileScrollSupport}),window.addEventListener("mouseup",this.onMouseUp),window.addEventListener("touchend",this.onTouchEnd))}getMousePos(t,e){const i=this.distElement.getBoundingClientRect();return{x:t-i.left,y:e-i.top}}checkTarget(t){return!this.app.getSettings().clickEventForward||!["a","button"].includes(t.tagName.toLowerCase())}}class c extends p{constructor(t,e,i,s){super(t,e,i),this.wrapper.insertAdjacentHTML("afterbegin",'<div class="stf__block"></div>'),this.distElement=t.querySelector(".stf__block"),this.items=s;for(const t of s)this.distElement.appendChild(t);this.setHandlers()}clear(){for(const t of this.items)this.parentElement.appendChild(t)}updateItems(t){this.removeHandlers(),this.distElement.innerHTML="";for(const e of t)this.distElement.appendChild(e);this.items=t,this.setHandlers()}update(){this.app.getRender().update()}}class u extends p{constructor(t,e,i){super(t,e,i),this.wrapper.innerHTML='<canvas class="stf__canvas"></canvas>',this.canvas=t.querySelectorAll("canvas")[0],this.distElement=this.canvas,this.resizeCanvas(),this.setHandlers()}resizeCanvas(){const t=getComputedStyle(this.canvas),e=parseInt(t.getPropertyValue("width"),10),i=parseInt(t.getPropertyValue("height"),10);this.canvas.width=e,this.canvas.height=i}getCanvas(){return this.canvas}update(){this.resizeCanvas(),this.app.getRender().update()}}class w extends l{constructor(t,e,i){super(t,e),this.outerShadow=null,this.innerShadow=null,this.hardShadow=null,this.hardInnerShadow=null,this.element=i,this.createShadows()}createShadows(){this.element.insertAdjacentHTML("beforeend",'<div class="stf__outerShadow"></div>\n             <div class="stf__innerShadow"></div>\n             <div class="stf__hardShadow"></div>\n             <div class="stf__hardInnerShadow"></div>'),this.outerShadow=this.element.querySelector(".stf__outerShadow"),this.innerShadow=this.element.querySelector(".stf__innerShadow"),this.hardShadow=this.element.querySelector(".stf__hardShadow"),this.hardInnerShadow=this.element.querySelector(".stf__hardInnerShadow")}clearShadow(){super.clearShadow(),this.outerShadow.style.cssText="display: none",this.innerShadow.style.cssText="display: none",this.hardShadow.style.cssText="display: none",this.hardInnerShadow.style.cssText="display: none"}reload(){this.element.querySelector(".stf__outerShadow")||this.createShadows()}drawHardInnerShadow(){const t=this.getRect(),e=this.shadow.progress>100?200-this.shadow.progress:this.shadow.progress;let i=(100-e)*(2.5*t.pageWidth)/100+20;i>t.pageWidth&&(i=t.pageWidth);let s=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+5).toString(10)};\n            width: ${i}px;\n            height: ${t.height}px;\n            background: linear-gradient(to right,\n                rgba(0, 0, 0, ${this.shadow.opacity*e/100}) 5%,\n                rgba(0, 0, 0, 0) 100%);\n            left: ${t.left+t.width/2}px;\n            transform-origin: 0 0;\n        `;s+=0===this.getDirection()&&this.shadow.progress>100||1===this.getDirection()&&this.shadow.progress<=100?"transform: translate3d(0, 0, 0);":"transform: translate3d(0, 0, 0) rotateY(180deg);",this.hardInnerShadow.style.cssText=s}drawHardOuterShadow(){const t=this.getRect();let e=(100-(this.shadow.progress>100?200-this.shadow.progress:this.shadow.progress))*(2.5*t.pageWidth)/100+20;e>t.pageWidth&&(e=t.pageWidth);let i=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+4).toString(10)};\n            width: ${e}px;\n            height: ${t.height}px;\n            background: linear-gradient(to left, rgba(0, 0, 0, ${this.shadow.opacity}) 5%, rgba(0, 0, 0, 0) 100%);\n            left: ${t.left+t.width/2}px;\n            transform-origin: 0 0;\n        `;i+=0===this.getDirection()&&this.shadow.progress>100||1===this.getDirection()&&this.shadow.progress<=100?"transform: translate3d(0, 0, 0) rotateY(180deg);":"transform: translate3d(0, 0, 0);",this.hardShadow.style.cssText=i}drawInnerShadow(){const t=this.getRect(),e=3*this.shadow.width/4,i=0===this.getDirection()?e:0,s=0===this.getDirection()?"to left":"to right",n=this.convertToGlobal(this.shadow.pos),r=this.shadow.angle+3*Math.PI/2,o=[this.pageRect.topLeft,this.pageRect.topRight,this.pageRect.bottomRight,this.pageRect.bottomLeft];let a="polygon( ";for(const t of o){let e=1===this.getDirection()?{x:-t.x+this.shadow.pos.x,y:t.y-this.shadow.pos.y}:{x:t.x-this.shadow.pos.x,y:t.y-this.shadow.pos.y};e=h.GetRotatedPoint(e,{x:i,y:100},r),a+=e.x+"px "+e.y+"px, "}a=a.slice(0,-2),a+=")";const g=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+10).toString(10)};\n            width: ${e}px;\n            height: ${2*t.height}px;\n            background: linear-gradient(${s},\n                rgba(0, 0, 0, ${this.shadow.opacity}) 5%,\n                rgba(0, 0, 0, 0.05) 15%,\n                rgba(0, 0, 0, ${this.shadow.opacity}) 35%,\n                rgba(0, 0, 0, 0) 100%);\n            transform-origin: ${i}px 100px;\n            transform: translate3d(${n.x-i}px, ${n.y-100}px, 0) rotate(${r}rad);\n            clip-path: ${a};\n            -webkit-clip-path: ${a};\n        `;this.innerShadow.style.cssText=g}drawOuterShadow(){const t=this.getRect(),e=this.convertToGlobal({x:this.shadow.pos.x,y:this.shadow.pos.y}),i=this.shadow.angle+3*Math.PI/2,s=1===this.getDirection()?this.shadow.width:0,n=0===this.getDirection()?"to right":"to left",r=[{x:0,y:0},{x:t.pageWidth,y:0},{x:t.pageWidth,y:t.height},{x:0,y:t.height}];let o="polygon( ";for(const t of r)if(null!==t){let e=1===this.getDirection()?{x:-t.x+this.shadow.pos.x,y:t.y-this.shadow.pos.y}:{x:t.x-this.shadow.pos.x,y:t.y-this.shadow.pos.y};e=h.GetRotatedPoint(e,{x:s,y:100},i),o+=e.x+"px "+e.y+"px, "}o=o.slice(0,-2),o+=")";const a=`\n            display: block;\n            z-index: ${(this.getSettings().startZIndex+10).toString(10)};\n            width: ${this.shadow.width}px;\n            height: ${2*t.height}px;\n            background: linear-gradient(${n}, rgba(0, 0, 0, ${this.shadow.opacity}), rgba(0, 0, 0, 0));\n            transform-origin: ${s}px 100px;\n            transform: translate3d(${e.x-s}px, ${e.y-100}px, 0) rotate(${i}rad);\n            clip-path: ${o};\n            -webkit-clip-path: ${o};\n        `;this.outerShadow.style.cssText=a}drawLeftPage(){"portrait"!==this.orientation&&null!==this.leftPage&&(1===this.direction&&null!==this.flippingPage&&"hard"===this.flippingPage.getDrawingDensity()?(this.leftPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.leftPage.setHardDrawingAngle(180+this.flippingPage.getHardAngle()),this.leftPage.draw(this.flippingPage.getDrawingDensity())):this.leftPage.simpleDraw(0))}drawRightPage(){null!==this.rightPage&&(0===this.direction&&null!==this.flippingPage&&"hard"===this.flippingPage.getDrawingDensity()?(this.rightPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.rightPage.setHardDrawingAngle(180+this.flippingPage.getHardAngle()),this.rightPage.draw(this.flippingPage.getDrawingDensity())):this.rightPage.simpleDraw(1))}drawBottomPage(){if(null===this.bottomPage)return;const t=null!=this.flippingPage?this.flippingPage.getDrawingDensity():null;"portrait"===this.orientation&&1===this.direction||(this.bottomPage.getElement().style.zIndex=(this.getSettings().startZIndex+3).toString(10),this.bottomPage.draw(t))}drawFrame(){this.clear(),this.drawLeftPage(),this.drawRightPage(),this.drawBottomPage(),null!=this.flippingPage&&(this.flippingPage.getElement().style.zIndex=(this.getSettings().startZIndex+5).toString(10),this.flippingPage.draw()),null!=this.shadow&&null!==this.flippingPage&&("soft"===this.flippingPage.getDrawingDensity()?(this.drawOuterShadow(),this.drawInnerShadow()):(this.drawHardOuterShadow(),this.drawHardInnerShadow()))}clear(){for(const t of this.app.getPageCollection().getPages())t!==this.leftPage&&t!==this.rightPage&&t!==this.flippingPage&&t!==this.bottomPage&&(t.getElement().style.cssText="display: none"),t.getTemporaryCopy()!==this.flippingPage&&t.hideTemporaryCopy()}update(){super.update(),null!==this.rightPage&&this.rightPage.setOrientation(1),null!==this.leftPage&&this.leftPage.setOrientation(0)}}class x{constructor(){this._default={startPage:0,size:"fixed",width:0,height:0,minWidth:0,maxWidth:0,minHeight:0,maxHeight:0,drawShadow:!0,flippingTime:1e3,usePortrait:!0,startZIndex:0,autoSize:!0,maxShadowOpacity:1,showCover:!1,mobileScrollSupport:!0,swipeDistance:30,clickEventForward:!0,useMouseEvents:!0,showPageCorners:!0,disableFlipByClick:!1}}getSettings(t){const e=this._default;if(Object.assign(e,t),"stretch"!==e.size&&"fixed"!==e.size)throw new Error('Invalid size type. Available only "fixed" and "stretch" value');if(e.width<=0||e.height<=0)throw new Error("Invalid width or height");if(e.flippingTime<=0)throw new Error("Invalid flipping time");return"stretch"===e.size?(e.minWidth<=0&&(e.minWidth=100),e.maxWidth<e.minWidth&&(e.maxWidth=2e3),e.minHeight<=0&&(e.minHeight=100),e.maxHeight<e.minHeight&&(e.maxHeight=2e3)):(e.minWidth=e.width,e.maxWidth=e.width,e.minHeight=e.height,e.maxHeight=e.height),e}}!function(t,e){void 0===e&&(e={});var i=e.insertAt;if(t&&"undefined"!=typeof document){var s=document.head||document.getElementsByTagName("head")[0],n=document.createElement("style");n.type="text/css","top"===i&&s.firstChild?s.insertBefore(n,s.firstChild):s.appendChild(n),n.styleSheet?n.styleSheet.cssText=t:n.appendChild(document.createTextNode(t))}}(".stf__parent {\n  position: relative;\n  display: block;\n  box-sizing: border-box;\n  transform: translateZ(0);\n\n  -ms-touch-action: pan-y;\n  touch-action: pan-y;\n}\n\n.sft__wrapper {\n  position: relative;\n  width: 100%;\n  box-sizing: border-box;\n}\n\n.stf__parent canvas {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n}\n\n.stf__block {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  perspective: 2000px;\n}\n\n.stf__item {\n  display: none;\n  position: absolute;\n  transform-style: preserve-3d;\n}\n\n.stf__outerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__innerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__hardShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n\n.stf__hardInnerShadow {\n  position: absolute;\n  left: 0;\n  top: 0;\n}");t.PageFlip=class extends class{constructor(){this.events=new Map}on(t,e){return this.events.has(t)?this.events.get(t).push(e):this.events.set(t,[e]),this}off(t){this.events.delete(t)}trigger(t,e,i=null){if(this.events.has(t))for(const s of this.events.get(t))s({data:i,object:e})}}{constructor(t,e){super(),this.isUserTouch=!1,this.isUserMove=!1,this.setting=null,this.pages=null,this.setting=(new x).getSettings(e),this.block=t}destroy(){this.ui.destroy(),this.block.remove()}update(){this.render.update(),this.pages.show()}loadFromImages(t){this.ui=new u(this.block,this,this.setting);const e=this.ui.getCanvas();this.render=new d(this,this.setting,e),this.flipController=new g(this.render,this),this.pages=new n(this,this.render,t),this.pages.load(),this.render.start(),this.pages.show(this.setting.startPage),setTimeout(()=>{this.ui.update(),this.trigger("init",this,{page:this.setting.startPage,mode:this.render.getOrientation()})},1)}loadFromHTML(t){this.ui=new c(this.block,this,this.setting,t),this.render=new w(this,this.setting,this.ui.getDistElement()),this.flipController=new g(this.render,this),this.pages=new o(this,this.render,this.ui.getDistElement(),t),this.pages.load(),this.render.start(),this.pages.show(this.setting.startPage),setTimeout(()=>{this.ui.update(),this.trigger("init",this,{page:this.setting.startPage,mode:this.render.getOrientation()})},1)}updateFromImages(t){const e=this.pages.getCurrentPageIndex();this.pages.destroy(),this.pages=new n(this,this.render,t),this.pages.load(),this.pages.show(e),this.trigger("update",this,{page:e,mode:this.render.getOrientation()})}updateFromHtml(t){const e=this.pages.getCurrentPageIndex();this.pages.destroy(),this.pages=new o(this,this.render,this.ui.getDistElement(),t),this.pages.load(),this.ui.updateItems(t),this.render.reload(),this.pages.show(e),this.trigger("update",this,{page:e,mode:this.render.getOrientation()})}clear(){this.pages.destroy(),this.ui.clear()}turnToPrevPage(){this.pages.showPrev()}turnToNextPage(){this.pages.showNext()}turnToPage(t){this.pages.show(t)}flipNext(t="top"){this.flipController.flipNext(t)}flipPrev(t="top"){this.flipController.flipPrev(t)}flip(t,e="top"){this.flipController.flipToPage(t,e)}updateState(t){this.trigger("changeState",this,t)}updatePageIndex(t){this.trigger("flip",this,t)}updateOrientation(t){this.ui.setOrientationStyle(t),this.update(),this.trigger("changeOrientation",this,t)}getPageCount(){return this.pages.getPageCount()}getCurrentPageIndex(){return this.pages.getCurrentPageIndex()}getPage(t){return this.pages.getPage(t)}getRender(){return this.render}getFlipController(){return this.flipController}getOrientation(){return this.render.getOrientation()}getBoundsRect(){return this.render.getRect()}getSettings(){return this.setting}getUI(){return this.ui}getState(){return this.flipController.getState()}getPageCollection(){return this.pages}startUserTouch(t){this.mousePosition=t,this.isUserTouch=!0,this.isUserMove=!1}userMove(t,e){this.isUserTouch||e||!this.setting.showPageCorners?this.isUserTouch&&h.GetDistanceBetweenTwoPoint(this.mousePosition,t)>5&&(this.isUserMove=!0,this.flipController.fold(t)):this.flipController.showCorner(t)}userStop(t,e=!1){this.isUserTouch&&(this.isUserTouch=!1,e||(this.isUserMove?this.flipController.stopMove():this.flipController.flip(t)))}},Object.defineProperty(t,"__esModule",{value:!0})}));
+</script>
+    <script>
+(function () {
+  'use strict';
+// FlipStudio Pro shared runtime engine.
+//
+// This file is the single source of truth for animation timing, frame
+// evaluation, overlay geometry, slideshow stepping and the playback clock.
+// It is imported as an ES module by the editor and Preview, and its source is
+// inlined verbatim (export keywords stripped) into exported publications, so
+// the editor, Preview and export can never drift apart.
+//
+// Rules for this file: no imports, no references to bundler globals, plain
+// ES2020 only, and every top-level declaration must be a `function` or `const`.
+
+const ANIMATION_PROPERTY = {
+  'fade-in': 'opacity',
+  'fade-out': 'opacity',
+  'move-x': 'x',
+  'move-y': 'y',
+  scale: 'scale',
+  rotation: 'rotation',
+}
+
+const EASINGS = ['linear', 'ease-in', 'ease-out', 'ease-in-out', 'ease-out-back']
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value))
+}
+
+function ease(progress, easing) {
+  const p = clamp(progress, 0, 1)
+  if (easing === 'ease-in') return p * p
+  if (easing === 'ease-out') return 1 - (1 - p) * (1 - p)
+  if (easing === 'ease-in-out') return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2
+  if (easing === 'ease-out-back') {
+    const c1 = 1.70158
+    const c3 = c1 + 1
+    return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2)
+  }
+  return p
+}
+
+/** Absolute timeline second at which an animation begins moving. */
+function animationBegin(animation) {
+  return Math.max(0, Number(animation.start) || 0) + Math.max(0, Number(animation.delay) || 0)
+}
+
+/** Timeline second at which a non-looping animation reaches its final value. */
+function animationEnd(animation) {
+  return animationBegin(animation) + Math.max(0.01, Number(animation.duration) || 0.01)
+}
+
+/**
+ * Value of one animation at timeline time `time` (seconds).
+ * Before it begins: `from`. After it ends (non-looping): `to`.
+ * Looping animations repeat forever after they begin; `alternate` ping-pongs.
+ */
+function animationValue(animation, time) {
+  const duration = Math.max(0.01, Number(animation.duration) || 0.01)
+  const elapsed = time - animationBegin(animation)
+  if (elapsed <= 0) return animation.from
+  let progress
+  if (!animation.loop) {
+    if (elapsed >= duration) return animation.alternate ? animation.from : animation.to
+    progress = elapsed / duration
+    if (animation.alternate) progress = progress < 0.5 ? progress * 2 : (1 - progress) * 2
+  } else if (animation.alternate) {
+    const cycle = (elapsed % (duration * 2)) / duration
+    progress = cycle <= 1 ? cycle : 2 - cycle
+  } else {
+    progress = (elapsed % duration) / duration
+  }
+  return animation.from + (animation.to - animation.from) * ease(progress, animation.easing)
+}
+
+/** The neutral frame: no offset, full opacity multiplier, unit scale. */
+function identityFrame() {
+  return { x: 0, y: 0, opacity: 1, scale: 1, rotation: 0 }
+}
+
+/** Animations ordered by begin time, then by their order in the project. */
+function orderAnimations(animations) {
+  return animations
+    .map((animation, index) => ({ animation, index }))
+    .sort((a, b) => animationBegin(a.animation) - animationBegin(b.animation) || a.index - b.index)
+    .map((entry) => entry.animation)
+}
+
+/**
+ * Frame for one object at `time`. Values are relative to the object's design
+ * state: x/y/rotation are offsets added to the base, opacity and scale are
+ * multipliers. For each property the earliest animation defines the initial
+ * state; later animations on the same property take over once they begin.
+ */
+function sampleFrame(animations, targetId, time) {
+  const frame = identityFrame()
+  const applied = {}
+  const ordered = orderAnimations(animations)
+  for (let i = 0; i < ordered.length; i += 1) {
+    const animation = ordered[i]
+    if (animation.targetId !== targetId) continue
+    const property = ANIMATION_PROPERTY[animation.type]
+    if (!property) continue
+    if (applied[property] && time < animationBegin(animation)) continue
+    frame[property] = animationValue(animation, time)
+    applied[property] = true
+  }
+  return frame
+}
+
+/** Frames for every animated object, keyed by object ID. */
+function sampleFrames(animations, time) {
+  const frames = {}
+  const targets = {}
+  for (let i = 0; i < animations.length; i += 1) targets[animations[i].targetId] = true
+  Object.keys(targets).forEach((targetId) => {
+    frames[targetId] = sampleFrame(animations, targetId, time)
+  })
+  return frames
+}
+
+function timelineDuration(animations) {
+  let duration = 0
+  for (let i = 0; i < animations.length; i += 1) duration = Math.max(duration, animationEnd(animations[i]))
+  return duration
+}
+
+function timelineLoops(animations) {
+  return animations.some((animation) => Boolean(animation.loop))
+}
+
+function round(value) {
+  return Math.round(value * 10000) / 10000
+}
+
+/**
+ * CSS geometry for an object on a page, in page-relative percentages so the
+ * same object lines up at any canvas, Preview or export scale.
+ */
+function overlayStyle(overlay, page, frame) {
+  const f = frame || identityFrame()
+  const rotation = (Number(overlay.rotation) || 0) + f.rotation
+  const opacity = clamp((overlay.opacity === undefined ? 1 : Number(overlay.opacity)) * f.opacity, 0, 1)
+  return {
+    left: round(((overlay.x + f.x) / page.width) * 100) + '%',
+    top: round(((overlay.y + f.y) / page.height) * 100) + '%',
+    width: round((overlay.width / page.width) * 100) + '%',
+    height: round((overlay.height / page.height) * 100) + '%',
+    opacity: String(round(opacity)),
+    transform: 'rotate(' + round(rotation) + 'deg) scale(' + round(f.scale) + ')',
+  }
+}
+
+/** Font size expressed in container-query width units of the page. */
+function textFontSize(overlay, page) {
+  const size = Number(overlay.fontSize) || 32
+  return round((size / page.width) * 100) + 'cqw'
+}
+
+/**
+ * Next slide index. Returns `{ index, ended }`; `ended` is true when a
+ * non-looping slideshow tried to move past its last (or first) slide.
+ */
+function stepSlide(index, count, direction, loop) {
+  if (!count || count < 1) return { index: 0, ended: true }
+  const next = index + direction
+  if (next >= count) return loop ? { index: 0, ended: false } : { index: count - 1, ended: true }
+  if (next < 0) return loop ? { index: count - 1, ended: false } : { index: 0, ended: true }
+  return { index: next, ended: false }
+}
+
+/**
+ * Class list for one slide image. Direction 0 means "no transition" (initial
+ * paint); otherwise the entering and leaving slides receive the transition
+ * classes defined in publication.css.
+ */
+function slideClassName(slideIndex, activeIndex, previousIndex, direction) {
+  const dir = direction < 0 ? ' dir-back' : direction > 0 ? ' dir-forward' : ''
+  if (slideIndex === activeIndex) return 'fs-slide is-active' + dir
+  if (slideIndex === previousIndex && direction !== 0) return 'fs-slide is-leaving' + dir
+  return 'fs-slide'
+}
+
+/** Only these URL schemes become clickable links in Preview and export. */
+function safeLinkUrl(url) {
+  if (typeof url !== 'string') return ''
+  const trimmed = url.trim()
+  return /^(https?:|mailto:|tel:)/i.test(trimmed) ? trimmed : ''
+}
+
+function slideIntervalMs(overlay) {
+  return Math.max(500, (Number(overlay.duration) || 3) * 1000)
+}
+
+function slideTransitionMs(overlay) {
+  if (overlay.transition === 'instant') return 0
+  const value = overlay.transitionDuration === undefined ? 0.6 : Number(overlay.transitionDuration)
+  return Math.round(clamp(value || 0, 0, 5) * 1000)
+}
+
+function initialSlideIndex(overlay) {
+  const count = (overlay.slides || []).length
+  if (!count) return 0
+  return clamp(Math.floor(Number(overlay.startIndex) || 0), 0, count - 1)
+}
+
+/**
+ * Timer-driven slideshow controller shared by Preview and export.
+ * `render(index, previousIndex, direction)` paints the slideshow; the
+ * controller owns exactly one timeout at a time, so repeated play() calls can
+ * never stack timers.
+ */
+function createSlideshowController(overlay, render, timers) {
+  const setT = (timers && timers.setTimeout) || ((fn, ms) => setTimeout(fn, ms))
+  const clearT = (timers && timers.clearTimeout) || ((id) => clearTimeout(id))
+  const count = (overlay.slides || []).length
+  let index = initialSlideIndex(overlay)
+  let timer = 0
+  let playing = false
+  let hoverPaused = false
+  let destroyed = false
+  const schedule = () => {
+    if (timer) clearT(timer)
+    timer = 0
+    if (!playing || hoverPaused || destroyed || count < 2) return
+    timer = setT(() => {
+      timer = 0
+      const result = stepSlide(index, count, 1, overlay.looping !== false)
+      if (result.ended) {
+        playing = false
+        notify()
+        return
+      }
+      go(result.index, 1)
+      schedule()
+    }, slideIntervalMs(overlay))
+  }
+  const notify = () => {
+    if (api.onStateChange) api.onStateChange(api)
+  }
+  const go = (nextIndex, direction) => {
+    const previous = index
+    index = nextIndex
+    render(index, previous, direction)
+  }
+  const api = {
+    onStateChange: null,
+    get index() { return index },
+    get playing() { return playing },
+    play() {
+      if (destroyed || playing) return
+      playing = true
+      schedule()
+      notify()
+    },
+    pause() {
+      if (!playing) return
+      playing = false
+      schedule()
+      notify()
+    },
+    toggle() { if (playing) api.pause(); else api.play() },
+    next() {
+      const result = stepSlide(index, count, 1, overlay.looping !== false)
+      if (result.index !== index) go(result.index, 1)
+      schedule()
+    },
+    previous() {
+      const result = stepSlide(index, count, -1, overlay.looping !== false)
+      if (result.index !== index) go(result.index, -1)
+      schedule()
+    },
+    goTo(target) {
+      const bounded = clamp(Math.floor(target), 0, Math.max(0, count - 1))
+      if (bounded !== index) go(bounded, bounded > index ? 1 : -1)
+      schedule()
+    },
+    setHover(hovered) {
+      if (!overlay.pauseOnHover) return
+      hoverPaused = hovered
+      schedule()
+    },
+    reset() {
+      playing = false
+      schedule()
+      go(initialSlideIndex(overlay), -1)
+    },
+    destroy() {
+      destroyed = true
+      playing = false
+      if (timer) clearT(timer)
+      timer = 0
+    },
+  }
+  render(index, index, 0)
+  return api
+}
+
+/**
+ * The single cancellable playback clock. Exactly one requestAnimationFrame
+ * callback is pending while playing; play() while playing is a no-op.
+ * States: 'stopped' (design state, time 0), 'playing', 'paused'.
+ */
+function createClock(options) {
+  const raf = options.requestFrame || ((cb) => requestAnimationFrame(cb))
+  const caf = options.cancelFrame || ((id) => cancelAnimationFrame(id))
+  const now = options.now || (() => performance.now())
+  let duration = Math.max(0, Number(options.duration) || 0)
+  let loops = Boolean(options.loops)
+  let time = 0
+  let state = 'stopped'
+  let frameId = 0
+  let originWall = 0
+  let originTime = 0
+  let destroyed = false
+
+  const emit = () => { if (!destroyed && options.onTick) options.onTick(time, state) }
+  const cancel = () => { if (frameId) caf(frameId); frameId = 0 }
+  const current = () => originTime + (now() - originWall) / 1000
+  const tick = () => {
+    frameId = 0
+    if (state !== 'playing' || destroyed) return
+    const t = current()
+    if (!loops && t >= duration) {
+      time = duration
+      state = 'paused'
+      emit()
+      if (options.onEnd) options.onEnd()
+      return
+    }
+    time = t
+    emit()
+    frameId = raf(tick)
+  }
+
+  return {
+    get time() { return time },
+    get state() { return state },
+    get duration() { return duration },
+    configure(next) {
+      if (next.duration !== undefined) duration = Math.max(0, Number(next.duration) || 0)
+      if (next.loops !== undefined) loops = Boolean(next.loops)
+      if (!loops && time > duration) time = duration
+    },
+    play() {
+      if (destroyed || state === 'playing') return
+      if (!loops && time >= duration) time = 0
+      originWall = now()
+      originTime = time
+      state = 'playing'
+      emit()
+      cancel()
+      frameId = raf(tick)
+    },
+    pause() {
+      if (state !== 'playing') return
+      time = loops ? current() : Math.min(duration, current())
+      cancel()
+      state = 'paused'
+      emit()
+    },
+    stop() {
+      cancel()
+      time = 0
+      state = 'stopped'
+      emit()
+    },
+    restart() {
+      cancel()
+      time = 0
+      state = 'stopped'
+      this.play()
+    },
+    seek(target) {
+      const upper = loops ? Math.max(duration, Number(target) || 0) : duration
+      time = clamp(Number(target) || 0, 0, upper)
+      if (state === 'playing') {
+        originWall = now()
+        originTime = time
+      } else {
+        state = 'paused'
+      }
+      emit()
+    },
+    destroy() {
+      cancel()
+      destroyed = true
+      state = 'stopped'
+    },
+  }
+}
+
+// FlipStudio Pro shared object styling: text, button and hotspot appearance,
+// idle/hover effects, link actions. Used by the editor canvas, Preview and
+// exported publications (inlined verbatim like engine.js), so an object looks
+// and behaves the same everywhere.
+//
+// Rules: no imports, plain ES2020, top-level `function`/`const` only.
+//
+// Sizes stored in page units (the same units as x/y/width/height) and are
+// converted to container-query width units (cqw) of the page, so styling
+// scales exactly with the page at any zoom, in Preview and in exports.
+
+const DEFAULT_STYLES = {
+  text: {
+    fontFamily: 'inter',
+    fontWeight: 700,
+    italic: false,
+    underline: false,
+    uppercase: false,
+    textAlign: 'left',
+    verticalAlign: 'top',
+    color: '#111827',
+    lineHeight: 1.15,
+    letterSpacing: 0,
+    background: 'transparent',
+    gradient: null,
+    textGradient: null,
+    borderColor: '#111827',
+    borderWidth: 0,
+    borderStyle: 'solid',
+    radius: 0,
+    padding: 0,
+    shadow: 'none',
+    textEffect: 'none',
+    effectColor: '#000000',
+  },
+  button: {
+    fontFamily: 'inter',
+    fontWeight: 700,
+    italic: false,
+    underline: false,
+    uppercase: false,
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    color: '#ffffff',
+    lineHeight: 1.1,
+    letterSpacing: 0,
+    background: '#2563eb',
+    gradient: null,
+    textGradient: null,
+    borderColor: '#1d4ed8',
+    borderWidth: 0,
+    borderStyle: 'solid',
+    radius: 14,
+    padding: 10,
+    shadow: 'soft',
+    textEffect: 'none',
+    effectColor: '#000000',
+  },
+  hotspot: {
+    fontFamily: 'inter',
+    fontWeight: 700,
+    italic: false,
+    underline: false,
+    uppercase: false,
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    color: '#ffffff',
+    lineHeight: 1.1,
+    letterSpacing: 0,
+    background: 'rgba(251,191,36,0.22)',
+    gradient: null,
+    textGradient: null,
+    borderColor: 'rgba(245,158,11,0.9)',
+    borderWidth: 3,
+    borderStyle: 'dashed',
+    radius: 8,
+    padding: 0,
+    shadow: 'none',
+    textEffect: 'none',
+    effectColor: '#f59e0b',
+    shape: 'rounded',
+    marker: 'none',
+    markerColor: '#ffffff',
+    markerBackground: '#ef4444',
+    reveal: 'always',
+    showLabel: false,
+  },
+}
+
+const IDLE_EFFECTS = ['none', 'pulse', 'glow', 'shine', 'bounce', 'float', 'wiggle', 'blink', 'ripple', 'beacon', 'heartbeat']
+const HOVER_EFFECTS = ['none', 'lift', 'grow', 'glow', 'darken', 'highlight', 'shine', 'underline']
+
+function styleFor(overlay) {
+  const defaults = DEFAULT_STYLES[overlay.type] || DEFAULT_STYLES.text
+  return Object.assign({}, defaults, overlay.style || {})
+}
+
+function unit(value, page) {
+  return Math.round(((Number(value) || 0) / page.width) * 100 * 10000) / 10000 + 'cqw'
+}
+
+function shadowCss(kind, color, page) {
+  const c = color || 'rgba(15,23,42,0.35)'
+  if (kind === 'soft') return '0 ' + unit(4, page) + ' ' + unit(12, page) + ' rgba(15,23,42,0.22)'
+  if (kind === 'medium') return '0 ' + unit(8, page) + ' ' + unit(24, page) + ' rgba(15,23,42,0.32)'
+  if (kind === 'strong') return '0 ' + unit(14, page) + ' ' + unit(40, page) + ' rgba(15,23,42,0.45)'
+  if (kind === 'glow') return '0 0 ' + unit(24, page) + ' ' + c
+  if (kind === 'inset') return 'inset 0 0 0 ' + unit(2, page) + ' ' + c
+  return 'none'
+}
+
+function textEffectCss(kind, color, page) {
+  const c = color || '#000000'
+  if (kind === 'shadow') return '0 ' + unit(2, page) + ' ' + unit(6, page) + ' rgba(0,0,0,0.45)'
+  if (kind === 'hard') return unit(3, page) + ' ' + unit(3, page) + ' 0 ' + c
+  if (kind === 'glow') return '0 0 ' + unit(10, page) + ' ' + c + ', 0 0 ' + unit(22, page) + ' ' + c
+  if (kind === 'outline') {
+    const w = unit(1.5, page)
+    return [w + ' 0 0 ' + c, '-' + w + ' 0 0 ' + c, '0 ' + w + ' 0 ' + c, '0 -' + w + ' 0 ' + c, w + ' ' + w + ' 0 ' + c, '-' + w + ' -' + w + ' 0 ' + c, w + ' -' + w + ' 0 ' + c, '-' + w + ' ' + w + ' 0 ' + c].join(', ')
+  }
+  if (kind === 'emboss') return '0 ' + unit(1, page) + ' 0 rgba(255,255,255,0.6), 0 -' + unit(1, page) + ' 0 rgba(0,0,0,0.35)'
+  return 'none'
+}
+
+function gradientCss(gradient) {
+  if (!gradient || !gradient.from || !gradient.to) return ''
+  return 'linear-gradient(' + (Number(gradient.angle) || 135) + 'deg, ' + gradient.from + ', ' + gradient.to + ')'
+}
+
+/**
+ * CSS for the inner "skin" element of a text, button or hotspot object.
+ * `fontStack` is the resolved CSS font-family list for style.fontFamily.
+ */
+function skinStyle(overlay, page, fontStack) {
+  const s = styleFor(overlay)
+  const css = {
+    fontFamily: fontStack || "'Segoe UI', system-ui, sans-serif",
+    fontSize: round((Number(overlay.fontSize) || 32) / page.width * 100) + 'cqw',
+    fontWeight: String(s.fontWeight || 400),
+    fontStyle: s.italic ? 'italic' : 'normal',
+    textDecoration: s.underline ? 'underline' : 'none',
+    textTransform: s.uppercase ? 'uppercase' : 'none',
+    textAlign: s.textAlign,
+    justifyContent: s.verticalAlign === 'middle' ? 'center' : s.verticalAlign === 'bottom' ? 'flex-end' : 'flex-start',
+    color: s.color,
+    lineHeight: String(s.lineHeight || 1.2),
+    letterSpacing: (Number(s.letterSpacing) || 0) + 'em',
+    padding: unit(s.padding, page),
+    borderWidth: unit(s.borderWidth, page),
+    borderStyle: Number(s.borderWidth) > 0 ? s.borderStyle : 'none',
+    borderColor: s.borderColor,
+    borderRadius: s.shape === 'circle' ? '50%' : s.shape === 'pill' ? '999px' : s.shape === 'rect' ? '0' : unit(s.radius, page),
+    boxShadow: shadowCss(s.shadow, s.effectColor, page),
+    textShadow: textEffectCss(s.textEffect, s.effectColor, page),
+    background: gradientCss(s.gradient) || s.background || 'transparent',
+    '--fs-effect-color': s.effectColor || '#3b82f6',
+    '--fs-marker-color': s.markerColor || '#ffffff',
+    '--fs-marker-bg': s.markerBackground || '#ef4444',
+  }
+  if (s.textGradient && s.textGradient.from && s.textGradient.to) {
+    css['--fs-text-gradient'] = gradientCss(s.textGradient)
+  }
+  return css
+}
+
+function skinClassName(overlay) {
+  const s = styleFor(overlay)
+  const classes = ['fs-skin']
+  if (overlay.effect && overlay.effect !== 'none') classes.push('fs-fx-' + overlay.effect)
+  if (overlay.hoverEffect && overlay.hoverEffect !== 'none') classes.push('fs-hover-' + overlay.hoverEffect)
+  if (s.textGradient && s.textGradient.from && s.textGradient.to) classes.push('fs-text-gradient')
+  if (overlay.type === 'hotspot' && s.reveal === 'hover') classes.push('fs-reveal-hover')
+  if (overlay.type === 'hotspot' && s.reveal === 'never') classes.push('fs-reveal-never')
+  return classes.join(' ')
+}
+
+/**
+ * Frame for image and slideshow objects: rounded corners (or a circle/oval),
+ * border and shadow. Applied to the object box, which clips its content.
+ */
+function frameStyle(overlay, page) {
+  const s = overlay.style || {}
+  const shape = s.shape || (Number(s.radius) > 0 ? 'rounded' : 'rect')
+  const width = Number(s.borderWidth) || 0
+  return {
+    borderRadius: shape === 'circle' ? '50%' : shape === 'rect' ? '0' : unit(s.radius, page),
+    border: width > 0 ? unit(width, page) + ' ' + (s.borderStyle || 'solid') + ' ' + (s.borderColor || '#ffffff') : 'none',
+    boxShadow: shadowCss(s.shadow || 'none', s.effectColor, page),
+  }
+}
+
+/**
+ * Crop inside the frame: `zoom` (1 = fit the frame) and the focal point x/y in
+ * percent. Implemented by enlarging the image box rather than a transform, so
+ * it never conflicts with slideshow transition animations.
+ */
+function cropStyle(overlay) {
+  const crop = overlay.crop || {}
+  const zoom = Math.min(5, Math.max(1, Number(crop.zoom) || 1))
+  const x = Math.min(100, Math.max(0, crop.x === undefined ? 50 : Number(crop.x)))
+  const y = Math.min(100, Math.max(0, crop.y === undefined ? 50 : Number(crop.y)))
+  const size = round(zoom * 100) + '%'
+  return {
+    position: 'absolute',
+    width: size,
+    height: size,
+    left: round((1 - zoom) * x) + '%',
+    top: round((1 - zoom) * y) + '%',
+    objectPosition: round(x) + '% ' + round(y) + '%',
+  }
+}
+
+/** Markers (small icons) shown on hotspots. Text glyphs keep exports dependency-free. */
+const HOTSPOT_MARKERS = { none: '', plus: '+', info: 'i', cart: '\u{1F6D2}', eye: '\u{1F441}', play: '▶', star: '★', dot: '' }
+
+function round(value) {
+  return Math.round(value * 10000) / 10000
+}
+
+/** Turns "www.site.com" into "https://www.site.com"; rejects unsafe schemes. */
+function normalizeWebUrl(value) {
+  const trimmed = String(value || '').trim()
+  if (!trimmed) return ''
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return ''
+  return 'https://' + trimmed.replace(/^\/+/, '')
+}
+
+/**
+ * Resolves an object's click action.
+ * Returns { kind: 'href', href, newTab } | { kind: 'page', page } | { kind: 'popup' } | null.
+ * Legacy objects with only `url` behave as a web link.
+ */
+function resolveAction(overlay) {
+  const link = overlay.link || (overlay.url ? { type: 'url', value: overlay.url, newTab: true } : null)
+  if (!link || !link.type || link.type === 'none') return null
+  const value = String(link.value || '').trim()
+  if (link.type === 'url') {
+    const href = normalizeWebUrl(value)
+    return href ? { kind: 'href', href, newTab: link.newTab !== false } : null
+  }
+  if (link.type === 'email') {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return null
+    const subject = link.subject ? '?subject=' + encodeURIComponent(link.subject) : ''
+    return { kind: 'href', href: 'mailto:' + value + subject, newTab: false }
+  }
+  if (link.type === 'phone') {
+    const digits = value.replace(/[^\d+]/g, '')
+    return digits.replace(/\D/g, '').length >= 5 ? { kind: 'href', href: 'tel:' + digits, newTab: false } : null
+  }
+  if (link.type === 'whatsapp') {
+    const digits = value.replace(/\D/g, '')
+    if (digits.length < 7) return null
+    const text = link.message ? '?text=' + encodeURIComponent(link.message) : ''
+    return { kind: 'href', href: 'https://wa.me/' + digits + text, newTab: true }
+  }
+  if (link.type === 'page') {
+    const page = Math.floor(Number(value))
+    return page >= 1 ? { kind: 'page', page: page - 1 } : null
+  }
+  if (link.type === 'popup') return overlay.popup ? { kind: 'popup' } : null
+  return null
+}
+
+
+
+
+// FlipStudio Pro publication reader.
+//
+// Mounted by the editor's Preview mode AND inlined into exported HTML/ZIP
+// publications, so Preview is the export. It renders the real pages and objects,
+// drives StPageFlip for page turns, runs slideshows through the shared
+// slideshow controller and evaluates animations with the shared engine clock.
+//
+// `mountPublication` returns a handle whose destroy() cancels the animation
+// frame, slideshow timers, observers, listeners and the PageFlip instance.
+
+function mountPublication(root, data, options) {
+  const opts = options || {}
+  const PageFlipCtor = opts.PageFlip || null
+  const doc = root.ownerDocument
+  const win = doc.defaultView
+  const pages = data.pages || []
+  const animations = data.animations || []
+  const cleanups = []
+  const controllers = []
+  const animated = {}
+  let currentPage = Math.min(Math.max(0, Number(opts.startPage) || 0), Math.max(0, pages.length - 1))
+  let book = null
+  let bookPortrait = null
+  let pageFlipFailed = false
+  let destroyed = false
+  let selectMode = false
+  let bookMouse = null
+  const hasText = pages.some((page) => page.text && page.text.length)
+  const readerSettings = data.reader || {}
+  const textTools = hasText && readerSettings.textTools !== false
+
+  const make = (tag, className, attrs) => {
+    const el = doc.createElement(tag)
+    if (className) el.className = className
+    if (attrs) Object.keys(attrs).forEach((key) => el.setAttribute(key, attrs[key]))
+    return el
+  }
+  const listen = (target, type, handler, capture) => {
+    target.addEventListener(type, handler, capture)
+    cleanups.push(() => target.removeEventListener(type, handler, capture))
+  }
+  const applyStyle = (el, style) => {
+    Object.keys(style).forEach((key) => {
+      if (key.indexOf('--') === 0) el.style.setProperty(key, style[key])
+      else el.style[key] = style[key]
+    })
+  }
+
+  // ---------- chrome ----------
+  root.replaceChildren()
+  root.classList.add('fs-reader')
+  if (readerSettings.background) root.style.setProperty('--fs-reader-bg', readerSettings.background)
+  if (readerSettings.toolbar) root.style.setProperty('--fs-reader-bar', readerSettings.toolbar)
+  const topBar = make('div', 'fs-reader-bar fs-reader-top')
+  const prevButton = make('button', 'fs-reader-btn', { type: 'button', 'data-action': 'previous-page', 'aria-label': 'Previous page' })
+  prevButton.textContent = '‹ Previous'
+  const pageCount = make('span', 'fs-reader-count', { 'aria-live': 'polite', 'data-role': 'page-count' })
+  const nextButton = make('button', 'fs-reader-btn', { type: 'button', 'data-action': 'next-page', 'aria-label': 'Next page' })
+  nextButton.textContent = 'Next ›'
+  const fullscreenButton = make('button', 'fs-reader-btn fs-reader-fullscreen', { type: 'button', 'data-action': 'fullscreen', 'aria-label': 'Toggle full screen' })
+  fullscreenButton.textContent = 'Full screen'
+  const selectButton = make('button', 'fs-reader-btn fs-reader-select', { type: 'button', 'data-action': 'select-text', 'aria-pressed': 'false', title: 'Select and copy text' })
+  selectButton.textContent = 'Select text'
+  const searchButton = make('button', 'fs-reader-btn fs-reader-search', { type: 'button', 'data-action': 'search', 'aria-expanded': 'false', title: 'Search this publication' })
+  searchButton.textContent = 'Search'
+  topBar.append(prevButton, pageCount, nextButton)
+  if (textTools) topBar.append(selectButton, searchButton)
+  topBar.append(fullscreenButton)
+
+  const stage = make('div', 'fs-stage')
+  const host = make('div', 'fs-book-host')
+  stage.append(host)
+
+  const bottomBar = make('div', 'fs-reader-bar fs-reader-bottom')
+  const playButton = make('button', 'fs-reader-btn', { type: 'button', 'data-action': 'play' })
+  playButton.textContent = 'Play'
+  const stopButton = make('button', 'fs-reader-btn', { type: 'button', 'data-action': 'stop' })
+  stopButton.textContent = 'Stop'
+  const duration = timelineDuration(animations)
+  const loops = timelineLoops(animations)
+  const scrubber = make('input', 'fs-reader-scrub', { type: 'range', min: '0', max: String(duration || 0), step: '0.01', value: '0', 'aria-label': 'Animation timeline', 'data-action': 'scrub' })
+  const timeLabel = make('span', 'fs-reader-time', { 'data-role': 'time' })
+  timeLabel.textContent = '0.00s'
+  bottomBar.append(playButton, stopButton, scrubber, timeLabel)
+  if (!animations.length) {
+    bottomBar.hidden = true
+  }
+  root.append(topBar, stage, bottomBar)
+
+  // ---------- objects ----------
+  const createSlideshow = (overlay, el) => {
+    const slides = overlay.slides || []
+    const fit = 'fs-fit-' + (overlay.fit || 'cover')
+    const wrap = make('div', 'fs-slides', { 'data-transition': overlay.transition || 'fade' })
+    wrap.style.setProperty('--fs-transition', slideTransitionMs(overlay) + 'ms')
+    const images = slides.map((slide, index) => {
+      const img = make('img', 'fs-slide ' + fit, { alt: slide.alt || overlay.label || 'Slide ' + (index + 1), draggable: 'false', 'data-slide-index': String(index) })
+      if (slide.src) img.src = slide.src
+      applyStyle(img, cropStyle(overlay))
+      wrap.append(img)
+      return img
+    })
+    el.append(wrap)
+    if (!slides.length) {
+      const empty = make('div', 'fs-placeholder')
+      empty.textContent = 'Slideshow has no images'
+      el.append(empty)
+      return
+    }
+    const indicators = overlay.showIndicators || 'dots'
+    let marks = []
+    if (slides.length > 1 && indicators === 'dots') {
+      const dots = make('div', 'fs-ss-dots')
+      marks = slides.map((_, index) => {
+        const dot = make('button', 'fs-ss-dot', { type: 'button', 'aria-label': 'Show slide ' + (index + 1) })
+        dot.addEventListener('click', (event) => { event.stopPropagation(); controller.goTo(index) })
+        dots.append(dot)
+        return dot
+      })
+      el.append(dots)
+    } else if (slides.length > 1 && indicators === 'thumbnails') {
+      const strip = make('div', 'fs-ss-thumbs')
+      marks = slides.map((slide, index) => {
+        const thumb = make('button', 'fs-ss-thumb', { type: 'button', 'aria-label': 'Show slide ' + (index + 1) })
+        const img = make('img', '', { alt: '', draggable: 'false' })
+        if (slide.src) img.src = slide.src
+        thumb.append(img)
+        thumb.addEventListener('click', (event) => { event.stopPropagation(); controller.goTo(index) })
+        strip.append(thumb)
+        return thumb
+      })
+      el.append(strip)
+    }
+    const render = (index, previous, direction) => {
+      images.forEach((img, i) => { img.className = slideClassName(i, index, previous, direction) + ' ' + fit })
+      marks.forEach((mark, i) => mark.classList.toggle('is-active', i === index))
+      el.setAttribute('data-slide', String(index))
+    }
+    const controller = createSlideshowController(overlay, render)
+    controllers.push(controller)
+    if (slides.length > 1 && overlay.showControls !== false) {
+      const prev = make('button', 'fs-ss-nav fs-ss-prev', { type: 'button', 'aria-label': 'Previous slide' })
+      prev.textContent = '‹'
+      const next = make('button', 'fs-ss-nav fs-ss-next', { type: 'button', 'aria-label': 'Next slide' })
+      next.textContent = '›'
+      prev.addEventListener('click', (event) => { event.stopPropagation(); controller.previous() })
+      next.addEventListener('click', (event) => { event.stopPropagation(); controller.next() })
+      el.append(prev, next)
+    }
+    el.addEventListener('pointerenter', () => controller.setHover(true))
+    el.addEventListener('pointerleave', () => controller.setHover(false))
+    if (overlay.autoplay) controller.play()
+  }
+
+  // ---------- actions (links, go to page, pop-ups) ----------
+  let popupEl = null
+  const closePopup = () => {
+    if (popupEl) popupEl.remove()
+    popupEl = null
+  }
+  const openPopup = (popup) => {
+    closePopup()
+    const backdrop = make('div', 'fs-popup-backdrop', { role: 'dialog', 'aria-modal': 'true', 'aria-label': popup.title || 'Details' })
+    const card = make('div', 'fs-popup')
+    const close = make('button', 'fs-popup-close', { type: 'button', 'aria-label': 'Close' })
+    close.textContent = '\u00d7'
+    close.addEventListener('click', closePopup)
+    card.append(close)
+    if (popup.image) card.append(make('img', '', { src: popup.image, alt: popup.title || '' }))
+    const body = make('div', 'fs-popup-body')
+    if (popup.title) {
+      const title = make('h2', 'fs-popup-title')
+      title.textContent = popup.title
+      body.append(title)
+    }
+    if (popup.price) {
+      const price = make('div', 'fs-popup-price')
+      price.textContent = popup.price
+      body.append(price)
+    }
+    if (popup.description) {
+      const text = make('p', 'fs-popup-text')
+      text.textContent = popup.description
+      body.append(text)
+    }
+    const cta = popup.link ? resolveAction({ type: 'button', link: popup.link }) : null
+    if (cta && cta.kind === 'href') {
+      const link = make('a', 'fs-popup-cta', { href: cta.href })
+      if (cta.newTab) {
+        link.setAttribute('target', '_blank')
+        link.setAttribute('rel', 'noopener noreferrer')
+      }
+      link.textContent = popup.buttonLabel || 'Learn more'
+      body.append(link)
+    } else if (cta && cta.kind === 'page') {
+      const link = make('button', 'fs-popup-cta', { type: 'button' })
+      link.textContent = popup.buttonLabel || 'Go to page'
+      link.addEventListener('click', () => { closePopup(); openPage(cta.page) })
+      body.append(link)
+    }
+    card.append(body)
+    backdrop.append(card)
+    backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closePopup() })
+    stage.append(backdrop)
+    popupEl = backdrop
+    close.focus()
+  }
+  const runAction = (action, overlay) => {
+    if (!action) return
+    if (action.kind === 'page') openPage(action.page)
+    else if (action.kind === 'popup' && overlay.popup) openPopup(overlay.popup)
+  }
+
+  const buildSkin = (overlay, page) => {
+    const skin = make('div', skinClassName(overlay))
+    applyStyle(skin, skinStyle(overlay, page, overlay.fontStack))
+    const s = styleFor(overlay)
+    if (overlay.type !== 'hotspot' || s.showLabel) {
+      const text = make('span', 'fs-text', { dir: 'auto' })
+      text.textContent = overlay.label || ''
+      skin.append(text)
+    }
+    if (overlay.type === 'hotspot') {
+      const marker = s.marker && s.marker !== 'none' ? s.marker : overlay.effect === 'beacon' ? 'dot' : 'none'
+      if (marker !== 'none') {
+        const dot = make('span', 'fs-marker', { 'data-marker': marker, 'aria-hidden': 'true' })
+        dot.textContent = HOTSPOT_MARKERS[marker] || ''
+        skin.append(dot)
+      }
+    }
+    return skin
+  }
+
+  const createOverlay = (overlay, page) => {
+    const action = resolveAction(overlay)
+    const isHref = action && action.kind === 'href'
+    const el = make(isHref ? 'a' : 'div', 'fs-overlay', { 'data-type': overlay.type, 'data-object-id': overlay.id })
+    if (isHref) {
+      el.setAttribute('href', action.href)
+      if (action.newTab) {
+        el.setAttribute('target', '_blank')
+        el.setAttribute('rel', 'noopener noreferrer')
+      }
+      el.setAttribute('data-action', 'link')
+    } else if (action) {
+      el.setAttribute('role', 'button')
+      el.setAttribute('tabindex', '0')
+      el.setAttribute('data-action', action.kind)
+      el.addEventListener('click', (event) => { event.preventDefault(); runAction(action, overlay) })
+      el.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); runAction(action, overlay) }
+      })
+    }
+    if (overlay.type === 'text' || overlay.type === 'button' || overlay.type === 'hotspot') {
+      el.append(buildSkin(overlay, page))
+      el.setAttribute('aria-label', overlay.label || overlay.type)
+    } else if (overlay.type === 'image') {
+      if (overlay.src) {
+        const img = make('img', 'fs-image fs-fit-' + (overlay.fit || 'cover'), { src: overlay.src, alt: overlay.label || '', draggable: 'false' })
+        applyStyle(img, cropStyle(overlay))
+        el.append(img)
+      } else {
+        const empty = make('div', 'fs-placeholder')
+        empty.textContent = 'Missing image'
+        el.append(empty)
+      }
+    } else if (overlay.type === 'slideshow') {
+      createSlideshow(overlay, el)
+    } else if (overlay.type === 'video' || overlay.type === 'audio') {
+      if (overlay.src) {
+        const media = make(overlay.type, '', { src: overlay.src, controls: '', preload: 'metadata' })
+        media.style.width = '100%'
+        media.style.height = '100%'
+        el.append(media)
+      } else {
+        el.textContent = overlay.label || ''
+      }
+    } else {
+      el.textContent = overlay.label || ''
+    }
+    if (overlay.tooltip) {
+      const tip = make('span', 'fs-tooltip', { role: 'tooltip' })
+      tip.textContent = overlay.tooltip
+      el.append(tip)
+    }
+    applyStyle(el, overlayStyle(overlay, page, null))
+    if (overlay.type === 'image' || overlay.type === 'slideshow') applyStyle(el, frameStyle(overlay, page))
+    animated[overlay.id] = { el, overlay, page }
+    return el
+  }
+
+  // ---------- text layer (selectable, copyable, searchable PDF text) ----------
+  const textSpans = pages.map(() => [])
+  const pageTexts = pages.map(() => ({ text: '', starts: [] }))
+  const pct = (value) => Math.round(value * 1000000) / 10000 + '%'
+  const buildTextLayer = (page, index) => {
+    const layer = make('div', 'fs-textlayer')
+    let joined = ''
+    page.text.forEach((item) => {
+      const span = make('span', '', { 'data-w': String(item.w) })
+      span.textContent = item.s
+      span.style.left = pct(item.x / page.width)
+      span.style.top = pct(item.y / page.height)
+      span.style.fontSize = Math.round((item.h / page.width) * 1000000) / 10000 + 'cqw'
+      if (item.f) span.style.fontFamily = item.f
+      if (item.a) span.style.setProperty('--fs-angle', item.a + 'deg')
+      layer.append(span)
+      if (item.eol) layer.append(make('br'))
+      pageTexts[index].starts.push(joined.length)
+      // Runs are joined with single spaces so phrases that wrap across lines are still found.
+      joined += /\s$/.test(item.s) ? item.s : item.s + ' '
+      textSpans[index].push(span)
+    })
+    pageTexts[index].text = joined
+    return layer
+  }
+  /** Stretches each text run to the width it has in the PDF (font metrics differ). Size-independent, so done once. */
+  const fitText = (index) => {
+    const el = pageElements[index]
+    if (!el || el.getAttribute('data-text-fit') === '1' || !textSpans[index].length) return
+    const pageWidth = el.clientWidth
+    if (!pageWidth) return
+    const page = pages[index]
+    textSpans[index].forEach((span) => {
+      const natural = span.offsetWidth
+      const target = (Number(span.getAttribute('data-w')) / page.width) * pageWidth
+      if (natural > 0 && target > 0) span.style.setProperty('--fs-scale-x', String(Math.round((target / natural) * 10000) / 10000))
+    })
+    el.setAttribute('data-text-fit', '1')
+  }
+  const fitVisibleText = () => {
+    if (!hasText) return
+    visiblePages().forEach(fitText)
+  }
+
+  const pageElements = pages.map((page, index) => {
+    const el = make('div', 'fs-page fs-book-page', { 'data-page-index': String(index), 'data-page-id': page.id })
+    if (page.background) el.append(make('img', 'fs-page-bg', { src: page.background, alt: page.name || 'Page ' + (index + 1), draggable: 'false' }))
+    else el.append(make('div', 'fs-page-blank'))
+    if (page.text && page.text.length) el.append(buildTextLayer(page, index))
+    ;(page.overlays || []).forEach((overlay) => {
+      if (overlay.visible === false) return
+      el.append(createOverlay(overlay, page))
+    })
+    return el
+  })
+
+  // ---------- animation ----------
+  const renderAnimations = (time, state) => {
+    const frames = state === 'stopped' && opts.designStateWhenStopped ? {} : sampleFrames(animations, time)
+    Object.keys(animated).forEach((id) => {
+      const entry = animated[id]
+      const css = overlayStyle(entry.overlay, entry.page, frames[id] || null)
+      entry.el.style.left = css.left
+      entry.el.style.top = css.top
+      entry.el.style.opacity = css.opacity
+      entry.el.style.transform = css.transform
+    })
+  }
+  const clock = createClock({
+    duration,
+    loops,
+    onTick: (time, state) => {
+      renderAnimations(time, state)
+      if (doc.activeElement !== scrubber) scrubber.value = String(Math.min(time, duration))
+      timeLabel.textContent = time.toFixed(2) + 's'
+      playButton.textContent = state === 'playing' ? 'Pause' : 'Play'
+      playButton.setAttribute('data-state', state)
+      root.setAttribute('data-playback', state)
+      if (opts.onTimeChange) opts.onTimeChange(time, state)
+    },
+  })
+  renderAnimations(0, 'paused')
+  listen(playButton, 'click', () => { if (clock.state === 'playing') clock.pause(); else clock.play() })
+  listen(stopButton, 'click', () => clock.stop())
+  listen(scrubber, 'input', () => clock.seek(Number(scrubber.value)))
+
+  // ---------- pages ----------
+  /** Indices of the pages currently on screen (one page, or a two-page spread). */
+  const visiblePages = () => {
+    if (!book || bookPortrait || pages.length < 2) return [currentPage]
+    if (pages.length > 2) {
+      // showCover: the cover is alone, then spreads start on odd indices.
+      if (currentPage === 0) return [0]
+      const left = currentPage % 2 === 1 ? currentPage : currentPage - 1
+      return left + 1 < pages.length ? [left, left + 1] : [left]
+    }
+    return [0, 1]
+  }
+  const updateCount = () => {
+    const total = pages.length
+    const spread = visiblePages()
+    const first = spread[0]
+    const last = spread[spread.length - 1]
+    pageCount.textContent = (total ? (first === last ? String(first + 1) : (first + 1) + '–' + (last + 1)) : '0') + ' / ' + total
+    prevButton.disabled = first <= 0
+    nextButton.disabled = last >= total - 1
+    root.setAttribute('data-current-page', String(currentPage))
+  }
+  const onPageOpened = () => {
+    updateCount()
+    if (hasText) win.requestAnimationFrame(fitVisibleText)
+    if (opts.onPageChange) opts.onPageChange(currentPage)
+    if (animations.length && data.restartAnimationsOnPageTurn !== false) clock.restart()
+  }
+
+  const ratio = pages.length ? pages[0].width / pages[0].height : 0.707
+  const measure = () => {
+    const rect = stage.getBoundingClientRect()
+    return { width: Math.max(0, rect.width - 16), height: Math.max(0, rect.height - 16) }
+  }
+  const wantsPortrait = (size) => pages.length < 2 || opts.forceSinglePage || size.width < size.height * ratio * 1.35
+
+  const layoutFallback = () => {
+    const size = measure()
+    let height = size.height
+    let width = height * ratio
+    if (width > size.width) { width = size.width; height = width / ratio }
+    pageElements.forEach((el, index) => {
+      el.style.width = Math.max(1, Math.floor(width)) + 'px'
+      el.style.height = Math.max(1, Math.floor(height)) + 'px'
+      el.hidden = index !== currentPage
+    })
+  }
+
+  const buildBook = () => {
+    const size = measure()
+    const portrait = wantsPortrait(size)
+    const spreadRatio = portrait ? ratio : ratio * 2
+    let width = Math.min(size.width, size.height * spreadRatio)
+    if (!width || width < 40) width = Math.max(40, size.width)
+    if (book && bookPortrait === portrait && bookMouse === !selectMode) {
+      host.firstElementChild.style.width = Math.floor(width) + 'px'
+      book.update()
+      return
+    }
+    if (book) {
+      book.destroy()
+      book = null
+    }
+    const mount = make('div', 'fs-book')
+    mount.style.width = Math.floor(width) + 'px'
+    host.replaceChildren(mount)
+    bookPortrait = portrait
+    if (!PageFlipCtor || pageFlipFailed || !pages.length) {
+      pageElements.forEach((el) => mount.append(el))
+      layoutFallback()
+      updateCount()
+      return
+    }
+    try {
+      book = createBook(mount, portrait)
+    } catch (error) {
+      // A page-turn engine failure must not take the publication down: fall
+      // back to one-page-at-a-time navigation with the same pages and objects.
+      if (win.console) win.console.warn('FlipStudio: page-turn engine unavailable, using simple navigation.', error)
+      book = null
+      pageFlipFailed = true
+      mount.replaceChildren(...pageElements)
+      layoutFallback()
+    }
+    updateCount()
+  }
+
+  const createBook = (mount, portrait) => {
+    const instance = new PageFlipCtor(mount, {
+      width: pages[0].width,
+      height: pages[0].height,
+      size: 'stretch',
+      minWidth: portrait ? 100000 : 1,
+      maxWidth: 6000,
+      minHeight: 1,
+      maxHeight: 6000,
+      usePortrait: portrait,
+      autoSize: true,
+      showCover: pages.length > 2,
+      drawShadow: true,
+      maxShadowOpacity: 0.45,
+      flippingTime: 700,
+      startPage: currentPage,
+      mobileScrollSupport: false,
+      clickEventForward: true,
+      disableFlipByClick: true,
+      // While selecting text, dragging must select instead of turning the page.
+      useMouseEvents: !selectMode,
+      showPageCorners: true,
+    })
+    bookMouse = !selectMode
+    mount.style.minWidth = '0'
+    mount.style.minHeight = '0'
+    try {
+      instance.loadFromHTML(pageElements)
+    } catch (error) {
+      try { instance.destroy() } catch (destroyError) { void destroyError }
+      host.replaceChildren(mount)
+      throw error
+    }
+    // PageFlip's UI (created by loadFromHTML) sets min-width to minWidth×2; in portrait
+    // mode that is the huge value used to force single pages, which would make the
+    // book overflow the screen on phones. Reset it and lay out again.
+    if (mount.style.minWidth !== '0px') {
+      mount.style.minWidth = '0'
+      mount.style.minHeight = '0'
+      if (typeof instance.update === 'function') instance.update()
+    }
+    instance.on('flip', (event) => {
+      currentPage = Number(event.data) || 0
+      onPageOpened()
+    })
+    return instance
+  }
+
+  const goPage = (direction) => {
+    if (book) {
+      if (direction > 0) book.flipNext()
+      else book.flipPrev()
+      return
+    }
+    const next = Math.min(pages.length - 1, Math.max(0, currentPage + direction))
+    if (next === currentPage) return
+    currentPage = next
+    layoutFallback()
+    onPageOpened()
+  }
+  /** Opens a page by index (used by "go to page" links). */
+  const openPage = (index) => {
+    const target = Math.min(pages.length - 1, Math.max(0, index))
+    if (book) {
+      if (typeof book.flip === 'function') book.flip(target)
+      else book.turnToPage(target)
+      return
+    }
+    if (target === currentPage) return
+    currentPage = target
+    layoutFallback()
+    onPageOpened()
+  }
+  // ---------- select text & search ----------
+  const setSelectMode = (on) => {
+    selectMode = !!on
+    root.classList.toggle('fs-selecting', selectMode)
+    selectButton.setAttribute('aria-pressed', String(selectMode))
+    selectButton.textContent = selectMode ? 'Done selecting' : 'Select text'
+    if (!selectMode && win.getSelection) {
+      const selection = win.getSelection()
+      if (selection && selection.removeAllRanges) selection.removeAllRanges()
+    }
+    if (book) buildBook()
+    win.requestAnimationFrame(fitVisibleText)
+  }
+  listen(selectButton, 'click', () => setSelectMode(!selectMode))
+
+  let searchPanel = null
+  const clearHits = () => {
+    root.querySelectorAll('.fs-textlayer .fs-hit').forEach((span) => span.classList.remove('fs-hit'))
+  }
+  /** All matches of `query` (case-insensitive) as { page, start, end }. */
+  const findMatches = (query) => {
+    const needle = query.replace(/\s+/g, ' ').toLocaleLowerCase()
+    const results = []
+    pageTexts.forEach((entry, page) => {
+      const haystack = entry.text.toLocaleLowerCase()
+      let from = 0
+      while (needle && results.length < 200) {
+        const at = haystack.indexOf(needle, from)
+        if (at < 0) break
+        results.push({ page, start: at, end: at + needle.length })
+        from = at + needle.length
+      }
+    })
+    return results
+  }
+  const highlight = (match) => {
+    clearHits()
+    const starts = pageTexts[match.page].starts
+    textSpans[match.page].forEach((span, i) => {
+      const start = starts[i]
+      const end = start + span.textContent.length
+      if (end > match.start && start < match.end) span.classList.add('fs-hit')
+    })
+    fitText(match.page)
+  }
+  const closeSearch = () => {
+    if (!searchPanel) return
+    searchPanel.remove()
+    searchPanel = null
+    clearHits()
+    searchButton.setAttribute('aria-expanded', 'false')
+  }
+  const openSearch = () => {
+    if (searchPanel) { searchPanel.querySelector('input').focus(); return }
+    const panel = make('div', 'fs-search', { role: 'search' })
+    const input = make('input', 'fs-search-input', { type: 'search', placeholder: 'Search text…', 'aria-label': 'Search text' })
+    const close = make('button', 'fs-search-close', { type: 'button', 'aria-label': 'Close search' })
+    close.textContent = '\u00d7'
+    const status = make('div', 'fs-search-status', { 'aria-live': 'polite' })
+    const list = make('ol', 'fs-search-results')
+    const head = make('div', 'fs-search-head')
+    head.append(input, close)
+    panel.append(head, status, list)
+    let timer = 0
+    const run = () => {
+      list.replaceChildren()
+      const query = input.value.trim()
+      if (query.length < 2) { status.textContent = query ? 'Type at least 2 letters.' : ''; clearHits(); return }
+      const matches = findMatches(query)
+      status.textContent = matches.length ? matches.length + (matches.length >= 200 ? '+' : '') + ' result' + (matches.length === 1 ? '' : 's') : 'No results'
+      matches.slice(0, 100).forEach((match) => {
+        const text = pageTexts[match.page].text
+        const item = make('li')
+        const button = make('button', 'fs-search-hit', { type: 'button' })
+        const label = make('strong')
+        label.textContent = 'Page ' + (match.page + 1)
+        const before = text.slice(Math.max(0, match.start - 30), match.start).replace(/\s+/g, ' ')
+        const after = text.slice(match.end, match.end + 40).replace(/\s+/g, ' ')
+        const mark = make('mark')
+        mark.textContent = text.slice(match.start, match.end)
+        const snippet = make('span')
+        snippet.append((match.start > 30 ? '…' : '') + before, mark, after + '…')
+        button.append(label, snippet)
+        button.addEventListener('click', () => {
+          openPage(match.page)
+          // Highlight once the page is on screen (after the flip starts).
+          win.requestAnimationFrame(() => highlight(match))
+          win.setTimeout(() => highlight(match), 750)
+        })
+        item.append(button)
+        list.append(item)
+      })
+      if (matches[0]) highlight(matches[0])
+    }
+    input.addEventListener('input', () => { win.clearTimeout(timer); timer = win.setTimeout(run, 180) })
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { win.clearTimeout(timer); run(); const first = list.querySelector('button'); if (first) first.click() }
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeSearch(); searchButton.focus() }
+    })
+    close.addEventListener('click', closeSearch)
+    stage.append(panel)
+    searchPanel = panel
+    searchButton.setAttribute('aria-expanded', 'true')
+    input.focus()
+  }
+  listen(searchButton, 'click', () => { if (searchPanel) closeSearch(); else openSearch() })
+
+  listen(prevButton, 'click', () => goPage(-1))
+  listen(nextButton, 'click', () => goPage(1))
+  listen(fullscreenButton, 'click', () => {
+    if (doc.fullscreenElement) {
+      if (doc.exitFullscreen) doc.exitFullscreen().catch(() => undefined)
+    } else if (root.requestFullscreen) root.requestFullscreen().catch(() => undefined)
+  })
+  listen(doc, 'keydown', (event) => {
+    const tag = event.target && event.target.tagName ? event.target.tagName.toLowerCase() : ''
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return
+    if (event.key === 'Escape' && popupEl) {
+      // The pop-up consumes Esc so a host (e.g. the editor's Preview) does not also react to it.
+      event.preventDefault()
+      event.stopPropagation()
+      closePopup()
+      return
+    }
+    if (event.key === 'Escape' && (searchPanel || selectMode)) {
+      event.preventDefault()
+      event.stopPropagation()
+      if (searchPanel) closeSearch()
+      else setSelectMode(false)
+      return
+    }
+    if (textTools && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'f') {
+      event.preventDefault()
+      openSearch()
+      return
+    }
+    if (event.key === 'ArrowLeft' || event.key === 'PageUp') goPage(-1)
+    if (event.key === 'ArrowRight' || event.key === 'PageDown') goPage(1)
+  })
+
+  let resizeFrame = 0
+  const onResize = () => {
+    if (resizeFrame) win.cancelAnimationFrame(resizeFrame)
+    resizeFrame = win.requestAnimationFrame(() => {
+      resizeFrame = 0
+      if (destroyed) return
+      buildBook()
+      if (!book) layoutFallback()
+    })
+  }
+  if (win.ResizeObserver) {
+    const observer = new win.ResizeObserver(onResize)
+    observer.observe(stage)
+    cleanups.push(() => observer.disconnect())
+  } else {
+    listen(win, 'resize', onResize)
+  }
+
+  buildBook()
+  updateCount()
+  if (animations.length && opts.autoplay !== false) clock.play()
+
+  return {
+    get currentPage() { return currentPage },
+    get clock() { return clock },
+    get controllers() { return controllers.slice() },
+    get book() { return book },
+    get selecting() { return selectMode },
+    setSelectMode,
+    search(query) { return findMatches(String(query || '')).map((match) => ({ page: match.page, start: match.start, end: match.end })) },
+    goToPage(index) {
+      const target = Math.min(pages.length - 1, Math.max(0, index))
+      if (book) book.turnToPage(target)
+      currentPage = target
+      if (!book) layoutFallback()
+      onPageOpened()
+    },
+    destroy() {
+      if (destroyed) return
+      destroyed = true
+      closePopup()
+      closeSearch()
+      clock.destroy()
+      controllers.forEach((controller) => controller.destroy())
+      if (resizeFrame) win.cancelAnimationFrame(resizeFrame)
+      cleanups.forEach((fn) => fn())
+      if (book) {
+        try { book.destroy() } catch (error) { void error }
+      }
+      book = null
+      root.replaceChildren()
+      root.classList.remove('fs-reader', 'fs-selecting')
+      root.style.removeProperty('--fs-reader-bg')
+      root.style.removeProperty('--fs-reader-bar')
+    },
+  }
+}
+
+  var data = JSON.parse(document.getElementById('fs-data').textContent);
+  var PageFlip = window.St && window.St.PageFlip ? window.St.PageFlip : null;
+  window.flipstudioPublication = mountPublication(document.getElementById('publication'), data, { PageFlip: PageFlip });
+})();
+    </script>
+  </body>
+</html>
